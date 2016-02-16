@@ -5,6 +5,7 @@ Description: GPIO interrupt handle (for 1276/1279)
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #ifndef __GPIO_BOARD_H__

@@ -5,6 +5,7 @@ Description: Helper functions implementation
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: 
 */
 
 #include <stdlib.h>

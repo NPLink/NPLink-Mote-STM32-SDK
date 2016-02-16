@@ -5,7 +5,7 @@ Description: app task implementation
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-
+Maintainer: 
 */
 
 /* Includes ------------------------------------------------------------------*/
@@ -13,6 +13,7 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 #include "stm32l0xx_hal_rtc.h"
 #include <string.h>
 #include <stdio.h>
+
 #include "osal_memory.h"
 #include "osal.h"
 #include "oled_board.h"
@@ -32,15 +33,13 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 /* Private define ------------------------------------------------------------*/
 
 /* Private macro -------------------------------------------------------------*/
-#define APP_PERIOD_SEND 0x0001
-#define APP_TEST_UART		0x0002
 
 /* Private variables ---------------------------------------------------------*/
 u8 APP_taskID;
 char Rx_buf[64]; //buffer for oled display
 u32 Rxpacket_count = 0 ;
 u8* RecieveBuff_flag = NULL;
-
+u8  Txpacket_count = 0 ;
 //for uart test
 __IO ITStatus UartReady = RESET;
 u8 aTxBuffer[] = "uart test, hello!\n";
@@ -49,9 +48,10 @@ u8 g_number = 0;
 
 extern UART_HandleTypeDef UartHandle;
 
+LoRaMacAppPara_t g_appData;
 
 /* Private function prototypes -----------------------------------------------*/
-void APP_ShowMoteID( u32 moteID );
+
 
 
 /* Private functions ---------------------------------------------------------*/
@@ -60,10 +60,10 @@ void APP_Init(u8 task_id)
 	//LoRaMacAppPara_t appData;
 
 	//LoRaMacMacPara_t macData;
-	
-	LoRaMacAppPara_t g_appData;
-  LoRaMacMacPara_t g_macData;
-	
+
+	//LoRaMacAppPara_t g_appData;
+    //LoRaMacMacPara_t g_macData;
+
 	APP_taskID = task_id;
 
 	g_appData.devAddr = 0x00120560;
@@ -72,10 +72,10 @@ void APP_Init(u8 task_id)
 	APP_ShowMoteID(g_appData.devAddr);
 
 
-	memset( &g_macData , 0 , sizeof(g_macData) );
-	g_macData.channels[0].Frequency = 779500000;
-	g_macData.channels[0].DrRange.Value = 0x50;
-	g_macData.channels[0].Band = 0;
+	//memset( &g_macData , 0 , sizeof(g_macData) );
+	//g_macData.channels[0].Frequency = 779500000;
+	//g_macData.channels[0].DrRange.Value = 0x50;
+	//g_macData.channels[0].Band = 0;
 
 #if 0
 	g_macData.channels[1].Frequency = 779500000;
@@ -89,71 +89,107 @@ void APP_Init(u8 task_id)
 	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS);
 #endif
 
+	//RedLED(OFF);
+	//GreenLED(OFF);
+	HalLedSet (HAL_LED_ALL, HAL_LED_MODE_OFF);
+
  	osal_set_event(APP_taskID,APP_PERIOD_SEND);
   //osal_set_event(APP_taskID,APP_TEST_UART);
+
 }
 
 u16 APP_ProcessEvent( u8 task_id, u16 events )
 {
 	loraMAC_msg_t* pMsgSend = NULL;
-  loraMAC_msg_t* pMsgRecieve = NULL; 
+  loraMAC_msg_t* pMsgRecieve = NULL;
 
-	u8 tmp_buf[64];
-	u8 len = 0 ;
-	
-	//system event
-	if(events & SYS_EVENT_MSG)
-	{ //receive msg loop
-		while(NULL != (pMsgRecieve = (loraMAC_msg_t*)osal_msg_receive(APP_taskID)))
-		{ //pMsgRecieve[0] is system event type
-		  switch(pMsgRecieve->msgID)
-		  	{
-		  		//tx done
-		  	  case TXDONE :
-						  //调度下一次发送
-				      // osal_start_timerEx(APP_taskID,APP_PERIOD_SEND, 5000);
+        u8 tmp_buf[64];
+        u8 len = 0 ;
 
-							//send a packet to LoRaMac osal (then can be send by the radio)
-							pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(72);
-							if(pMsgSend != NULL)
+        //system event
+        if(events & SYS_EVENT_MSG)
+        {
+					//receive msg loop
+					while(NULL != (pMsgRecieve = (loraMAC_msg_t*)osal_msg_receive(APP_taskID)))
+					{
+							//pMsgRecieve[0] is system event type
+							switch(pMsgRecieve->msgID)
 							{
-								osal_memset(pMsgSend,0,72);
-								pMsgSend->msgID = TXREQUEST;
-								pMsgSend->msgLen = 16;
-								for(u8 dataCount = 0; dataCount < 16; dataCount++)
-								{
-									pMsgSend->msgData[dataCount] = dataCount;
-								}
-									osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
-							}
-							
-              break;
+							//tx done
+							case TXDONE :
+									//调度下一次发送
+									//RedLED(ON);
+									HalLedSet (HAL_LED_1, HAL_LED_MODE_ON);
+									if(Txpacket_count > 0)
+									{
+										Txpacket_count--;
+										HAL_UART_SendBytes(uart1_rxBuf,uart1_Rxcount);
+										pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(72);
+										if(pMsgSend != NULL)
+										{
+											osal_memset(pMsgSend,0,72);//需要全部置0，要不然会出现发完串口数据包后不再进入TXDONE
+											pMsgSend->msgID = TXREQUEST;
+											pMsgSend->msgLen = uart1_Rxcount+2;
+											osal_memcpy(pMsgSend->msgData,uart1_rxBuf,uart1_Rxcount);
+											osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
+											osal_msg_deallocate((u8*)pMsgSend);
+										}
+									}
+									else
+									{
+										//send a packet to LoRaMac osal (then can be send by the radio)
+										pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(72);
+										if(pMsgSend != NULL)
+										{
+											osal_memset(pMsgSend,0,72);
+											pMsgSend->msgID = TXREQUEST;
+											pMsgSend->msgLen = 70;
+											for(u8 dataCount = 0; dataCount < 70; dataCount++)
+											{
+												pMsgSend->msgData[dataCount] = dataCount;
+											}
+											osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
+											osal_msg_deallocate((u8*)pMsgSend);
 
-					//rx done
-					case RXDONE:
-						len = 0 ;
-						g_number++ ;
+											HAL_UART_SendBytes("app send\n", osal_strlen("app send\n"));
+										}
+									}
+        							//RedLED(OFF);
+        							HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
+        							break;
+        					//rx done
+        					case RXDONE:
+                          
+                                HalLedSet (HAL_LED_2, HAL_LED_MODE_ON);
+                                OLED_Clear_Half();//先把屏幕下一半清空
+                                APP_ShowMoteID(g_appData.devAddr);
+                                len = 0 ;
+                                g_number++ ;
+                                memset(Rx_buf , 0 ,sizeof(Rx_buf));                               
+                                osal_memcpy(Rx_buf,pMsgRecieve->msgData,pMsgRecieve->msgLen);
+				    len = pMsgRecieve->msgLen;
+				    Rx_buf[len] = 0;
+                                OLED_ShowString( 0,36, (u8*)Rx_buf,12 );
+                                OLED_Refresh_Gram();
+                                HAL_UART_SendBytes("\n",1);
+                                HAL_UART_SendBytes((uint8_t *)Rx_buf,strlen(Rx_buf));
+				     HalLedSet (HAL_LED_2, HAL_LED_MODE_OFF);
 
-						//display some message on the oled
-						memset( tmp_buf ,0 ,sizeof(tmp_buf) );
-						memset( Rx_buf,0,sizeof(Rx_buf) );
+                                break;
 
-						sprintf( Rx_buf,"RX:%d ",g_number);
-						len += strlen( Rx_buf );
-						sprintf( Rx_buf+len,"len:%d ",pMsgRecieve->msgLen);
-						OLED_ShowString( 0,12, (u8*)Rx_buf,12 );
+                             case TXERR_STATUS:
+                             {
+                                //TODO MOTE send packet error deal
+                                memset( tmp_buf ,0 ,sizeof(tmp_buf) );
+                                sprintf( (char *)tmp_buf,"send err ret=%d,no=%d",pMsgRecieve->msgData[0],
+                                                                                 pMsgRecieve->msgData[1]+( pMsgRecieve->msgData[2]<<8 ) );
+                                OLED_ShowString( 0,36,tmp_buf,12 );
+                                OLED_Refresh_Gram();
+                                break;
+                             }
 
-						memset(Rx_buf , 0 ,sizeof(Rx_buf));
-						osal_memcpy(Rx_buf,"DATA:",5);
 
-						osal_memcpy(&Rx_buf[5],pMsgRecieve->msgData,pMsgRecieve->msgLen);
-						
-						OLED_ShowString( 0,24, (u8*)Rx_buf,12 );
-						OLED_Refresh_Gram();
-
-				    break;
-
-            default:
+                    default:
 					    break;
 		  	}
 
@@ -167,19 +203,23 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 	//send a packet event
 	if(events & APP_PERIOD_SEND)
 	{
+		//RedLED(OFF);
+		 HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
 		//send a packet to LoRaMac osal (then can be send by the radio)
 		pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(72);
 		if(pMsgSend != NULL)
 		{
 			osal_memset(pMsgSend,0,72);
 			pMsgSend->msgID = TXREQUEST;
-			pMsgSend->msgLen = 16;
-			for(u8 dataCount = 0; dataCount < 16; dataCount++)
+			pMsgSend->msgLen = 70;
+			for(u8 dataCount = 0; dataCount < 70; dataCount++)
 			{
 				pMsgSend->msgData[dataCount] = dataCount;
 			}
 				osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
 		}
+
+	  //osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,1000);//延时继续发送
 
 		return (events ^ APP_PERIOD_SEND);
 	}
@@ -187,21 +227,10 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 	//uart test event
 	if(events & APP_TEST_UART)
 	{
-		if(HAL_UART_Transmit_IT(&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE)!= HAL_OK)
-		{
-		
-		}
-		while (UartReady != SET)
-		{
-		}
 
-		UartReady = RESET;
-
-		if(HAL_UART_Receive_IT(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE) != HAL_OK)
-		{
-
-		}
-	
+		 Txpacket_count = 1;//串口收到一个数据包，就发一遍无线包出去add by hxz
+		//HAL_UART_SendBytes("hello,world!", 10);
+		//osal_start_timerEx(APP_taskID, APP_TEST_UART,1000);//延时继续发送
 		return (events ^ APP_TEST_UART);
 	}
 
@@ -237,7 +266,7 @@ void APP_ShowMoteID( u32 moteID )
 		pIDString++;
 	}
 	sprintf((char*)pIDString,"%x",moteID);
-	
+
 	OLED_ShowString( 0,0,MoteIDString,12 );
 	OLED_Refresh_Gram();
 }

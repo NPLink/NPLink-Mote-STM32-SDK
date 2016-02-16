@@ -5,6 +5,7 @@ Description: OLED driver implementation, used for display.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: 
 */
 
 #include "oled_board.h"
@@ -153,8 +154,10 @@ void OLED_Clear(void)
 void OLED_Clear_Half(void)  
 {  
 	u8 i,n;  
-	for(i=0;i<8;i++)for(n=0;n<128;n++)
-		OLED_GRAM[n][i]=0X00;  
+	for(i=0;i<2;i++)
+		for(n=0;n<128;n++)
+		    OLED_GRAM[n][i]=0X00;  
+	OLED_Refresh_Gram();
 }
 
 /*********************************************************************

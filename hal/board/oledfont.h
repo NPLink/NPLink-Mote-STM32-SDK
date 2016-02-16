@@ -5,6 +5,7 @@ Description: OLED driver implementation, used for display.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #ifndef __OLED_FONT_H

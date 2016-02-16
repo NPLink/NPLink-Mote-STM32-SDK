@@ -59,7 +59,7 @@
 #include "rtc_board.h"
 #include "uart_board.h"
 #include "stm32l0xx_hal_uart.h"
-
+#include "key_board.h"
 
 void SystemClock_Config(void);
 void SystemPower_Config(void);
@@ -131,7 +131,11 @@ void HAL_MspInit(void)
 	SystemClock_Config();
 
 	//initiate LEDs
-	LED_Init();
+	HalLedInit();
+
+	//initiate KEY
+	//KEY_Init();
+	HalKeyInit( );
 
 	//initiate OLED
 	OLED_Init();
@@ -142,7 +146,7 @@ void HAL_MspInit(void)
 	SX1276IoInit( );
 
 	//sx1279 active crystal initiate and power on
-  SX1276Q1CtrlInit(); 
+  SX1276Q1CtrlInit();
 
 	//initiate 3-wire UART
   UART_Init();

@@ -5,6 +5,7 @@ Description: SPI1 driver implementation, used for communication with sx1276/9
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #ifndef _SPI_BOARD_H

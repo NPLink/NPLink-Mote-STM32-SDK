@@ -44,7 +44,11 @@
 #include "timer_board.h"
 #include "uart_board.h"
 #include "timer.h"
-
+#include "uart_board.h"
+#include "osal.h"
+#include "app_osal.h"
+#include "delay.h"
+#include "led_board.h"
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
   */
@@ -61,7 +65,8 @@
 extern RTC_HandleTypeDef RTCHandle;
 extern UART_HandleTypeDef UartHandle;
 
-
+ uint8_t step;
+ uint8_t stepflag = 1;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -172,15 +177,94 @@ void RTC_IRQHandler(void)
   */
 void USART1_IRQHandler(void)
 {
-  HAL_UART_IRQHandler(&UartHandle);
+//  HAL_UART_IRQHandler(&UartHandle);
+        UART_HandleTypeDef *huart = &UartHandle;
+        uint8_t ch = 0;
+
+        /* UART parity error interrupt occurred ------------------------------------*/
+        if((__HAL_UART_GET_IT(huart, UART_IT_PE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_PE) != RESET))
+        {
+                __HAL_UART_CLEAR_IT(huart, UART_CLEAR_PEF);
+
+                huart->ErrorCode |= HAL_UART_ERROR_PE;
+                /* Set the UART state ready to be able to start again the process */
+                huart->State = HAL_UART_STATE_READY;
+        }
+
+        /* UART frame error interrupt occured --------------------------------------*/
+        if((__HAL_UART_GET_IT(huart, UART_IT_FE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_ERR) != RESET))
+        {
+                __HAL_UART_CLEAR_IT(huart, UART_CLEAR_FEF);
+
+                huart->ErrorCode |= HAL_UART_ERROR_FE;
+                /* Set the UART state ready to be able to start again the process */
+                huart->State = HAL_UART_STATE_READY;
+        }
+
+        /* UART noise error interrupt occured --------------------------------------*/
+        if((__HAL_UART_GET_IT(huart, UART_IT_NE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_ERR) != RESET))
+        {
+                __HAL_UART_CLEAR_IT(huart, UART_CLEAR_NEF);
+
+                huart->ErrorCode |= HAL_UART_ERROR_NE;
+                /* Set the UART state ready to be able to start again the process */
+                huart->State = HAL_UART_STATE_READY;
+        }
+
+        /* UART Over-Run interrupt occured -----------------------------------------*/
+        if((__HAL_UART_GET_IT(huart, UART_IT_ORE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_ERR) != RESET))
+        {
+                __HAL_UART_CLEAR_IT(huart, UART_CLEAR_OREF);
+
+                huart->ErrorCode |= HAL_UART_ERROR_ORE;
+                /* Set the UART state ready to be able to start again the process */
+                huart->State = HAL_UART_STATE_READY;
+        }
+
+        /* Call UART Error Call back function if need be --------------------------*/
+        if(huart->ErrorCode != HAL_UART_ERROR_NONE)
+        {
+                HAL_UART_ErrorCallback(huart);
+        }
+
+        /* UART Wake Up interrupt occured ------------------------------------------*/
+        if((__HAL_UART_GET_IT(huart, UART_IT_WUF) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_WUF) != RESET))
+        {
+                __HAL_UART_CLEAR_IT(huart, UART_CLEAR_WUF);
+                /* Set the UART state ready to be able to start again the process */
+                huart->State = HAL_UART_STATE_READY;
+                HAL_UARTEx_WakeupCallback(huart);
+        }
+
+        /* UART in mode Receiver ---------------------------------------------------*/	
+        if((__HAL_UART_GET_IT(huart, UART_IT_RXNE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_RXNE) != RESET))
+        {
+                osal_memset(uart1_rxBuf,0,80);//????那y?Y
+                 uart1_Rxcount= 0;   
+		  ch = (uint8_t)(USART1->RDR );   
+		  uart1_rxBuf[uart1_Rxcount++] = ch;
+		  u16 conut = 0;
+		  //GreenLED(ON);
+		  HalLedSet (HAL_LED_2, HAL_LED_MODE_ON);
+		  while(conut < 1000)//??那y℅?3∟那㊣???a1000,?車那?50??℅??迆D豕辰a5MS  add by hongxz
+	  	  {
+	  	  	if(__HAL_UART_GET_IT(huart, UART_IT_RXNE) != RESET)
+  	  		{  	  			
+				ch = (uint8_t)(USART1->RDR );   
+				uart1_rxBuf[uart1_Rxcount++] = ch;
+				conut = 0;//??D???那y
+  	  		}
+			conut ++;
+	  	  }
+		  //GreenLED(OFF);
+		  HalLedSet (HAL_LED_2, HAL_LED_MODE_OFF);
+		  if(uart1_Rxcount > 0 && uart1_Rxcount < 71)//?T??℅?∩車3∟?豕℅?∩車?a70℅??迆
+	  	{
+			osal_start_timerEx(APP_taskID,APP_TEST_UART, 10);    
+	  	}
+        }
+		
 }
 
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

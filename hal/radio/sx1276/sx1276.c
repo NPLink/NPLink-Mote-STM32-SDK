@@ -5,7 +5,7 @@ Description: Generic SX1276 driver implementation.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
+Maintainer: 
 */
 
 #include <math.h>
@@ -15,6 +15,8 @@ Maintainer: Robxr
 #include "sx1276.h"
 #include "sx1276_board.h"
 #include "spi_board.h"
+
+#include "oled_board.h"
 
 #define debug_rssi 1
 
@@ -42,6 +44,8 @@ typedef struct
 }FskBandwidth_t;
 
 
+SX1276_Tx_Pac_Param_t g_sx1276_tx_pac_param ;
+SX1276_Rx_Pac_Param_t g_sx1276_rx_pac_param;
 /*
  * Private functions prototypes
  */
@@ -258,6 +262,10 @@ RadioState_t SX1276GetStatus( void )
 
 void SX1276SetChannel( uint32_t freq )
 {
+    //memset( &g_sx1276_tx_pac_param , 0 ,sizeof(g_sx1276_tx_pac_param) );
+    g_sx1276_tx_pac_param.freq = freq ;
+    g_sx1276_rx_pac_param.freq = freq ;
+	
     SX1276.Settings.Channel = freq;
     freq = ( uint32_t )( ( double )freq / ( double )FREQ_STEP );
     SX1276Write( REG_FRFMSB, ( uint8_t )( ( freq >> 16 ) & 0xFF ) );
@@ -351,7 +359,7 @@ static void RxChainCalibration( void )//接收频率校准
     }
 
     // Sets a Frequency in HF band
-    SX1276SetChannel( 868000000 ); //??????
+    SX1276SetChannel( 868000000 );
 
     // Launch Rx chain calibration for HF band
     SX1276Write( REG_IMAGECAL, ( SX1276Read( REG_IMAGECAL ) & RF_IMAGECAL_IMAGECAL_MASK ) | RF_IMAGECAL_IMAGECAL_START );
@@ -385,7 +393,7 @@ static uint8_t GetFskBandwidthRegValue( uint32_t bandwidth )
     while( 1 );
 }
 
-void SX1276SetRxConfig( RadioModems_t modem, uint32_t bandwidth,   // add by xlh
+void SX1276SetRxConfig( RadioModems_t modem, uint32_t bandwidth,
                          uint32_t datarate, uint8_t coderate,
                          uint32_t bandwidthAfc, uint16_t preambleLen,
                          uint16_t symbTimeout, bool fixLen,
@@ -451,6 +459,11 @@ void SX1276SetRxConfig( RadioModems_t modem, uint32_t bandwidth,   // add by xlh
             SX1276.Settings.LoRa.IqInverted = iqInverted;
             SX1276.Settings.LoRa.RxContinuous = rxContinuous;
 
+            //add sx1276 rx packets param to display
+            g_sx1276_rx_pac_param.datarate = datarate ;
+            g_sx1276_rx_pac_param.bandwidth = bandwidth ;
+            g_sx1276_rx_pac_param.coderate = coderate ;
+			
             if( datarate > 12 )
             {
                 datarate = 12;
@@ -548,7 +561,7 @@ void SX1276SetRxConfig( RadioModems_t modem, uint32_t bandwidth,   // add by xlh
     }
 }
 
-void SX1276SetTxConfig( RadioModems_t modem, int8_t power, uint32_t fdev,   //add by xlh
+void SX1276SetTxConfig( RadioModems_t modem, int8_t power, uint32_t fdev,
                         uint32_t bandwidth, uint32_t datarate,
                         uint8_t coderate, uint16_t preambleLen,
                         bool fixLen, bool crcOn, bool freqHopOn,
@@ -670,6 +683,7 @@ void SX1276SetTxConfig( RadioModems_t modem, int8_t power, uint32_t fdev,   //ad
             //SX1276.Settings.LoRa.TxTimeout = timeout;
 						SX1276.Settings.LoRa.TxTimeout = 0x007A1200 ;
 
+
             if( datarate > 12 )
             {
                 datarate = 12;
@@ -687,6 +701,12 @@ void SX1276SetTxConfig( RadioModems_t modem, int8_t power, uint32_t fdev,   //ad
             {
                 SX1276.Settings.LoRa.LowDatarateOptimize = 0x00;
             }
+
+            //add sx1276 tx packets param to display
+            g_sx1276_tx_pac_param.datarate = datarate ;
+            g_sx1276_tx_pac_param.bandwidth = bandwidth ;
+            g_sx1276_tx_pac_param.coderate = coderate ;
+
 
             if( SX1276.Settings.LoRa.FreqHopOn == true )
             {
@@ -1333,6 +1353,8 @@ void SX1276OnDio0Irq( void )
 {
     __IO uint8_t irqFlags = 0;
 
+		HAL_UART_SendBytes("SX1276OnDio0Irq\n", osal_strlen("SX1276OnDio0Irq\n"));
+
     switch( SX1276.Settings.State )
     {
         case RF_RX_RUNNING:
@@ -1516,6 +1538,7 @@ void SX1276OnDio0Irq( void )
                 if( ( RadioEvents != NULL ) && ( RadioEvents->TxDone != NULL ) )
                 {
                     RadioEvents->TxDone( );
+			HAL_UART_SendBytes("TxDone\n", osal_strlen("TxDone\n"));
                 }
                 break;
             }
@@ -1792,4 +1815,134 @@ void SX1276SetTcxoConfig(void)
   SX1276Write( REG_TCXO, 0x19 );
 	SX1276Write(REG_PACONFIG,0xff);//接到P A 口
 }
+
+
+void display_sx1276_tx_pac_parm( u16 frame_no  )
+{
+
+    char display_buf[128]; //buffer for oled display
+
+    u8 len = 0 ;
+
+    //display some message on the oled
+
+    memset( display_buf,0,sizeof(display_buf) );
+
+    sprintf( display_buf,"#%d ",frame_no );//g_number
+    OLED_ShowString( 70,0, (u8*)display_buf,12 );
+    //len = strlen( display_buf );
+
+    sprintf( display_buf+len,"tfq%d,",g_sx1276_tx_pac_param.freq/100000 );//chanel
+    len = strlen( display_buf );
+
+    //if( g_sx1276_tx_pac_param.datarate )
+    sprintf( display_buf+len,"%d,",g_sx1276_tx_pac_param.datarate );//datarate
+    len = strlen( display_buf );
+
+    if( 7 == g_sx1276_tx_pac_param.bandwidth )
+    {
+        g_sx1276_tx_pac_param.bandwidth = 125 ;
+    }
+    else if( 8 == g_sx1276_tx_pac_param.bandwidth )
+    {
+        g_sx1276_tx_pac_param.bandwidth = 250 ;
+    }
+    else if( 9 == g_sx1276_tx_pac_param.bandwidth )
+    {
+        g_sx1276_tx_pac_param.bandwidth = 500 ;
+    }
+    else
+    {
+        g_sx1276_tx_pac_param.bandwidth = 0 ;
+    }
+
+    sprintf( display_buf+len,"%d,",g_sx1276_tx_pac_param.bandwidth);//bandwidth
+    len = strlen( display_buf );
+
+#if 1
+    if( 1 == g_sx1276_tx_pac_param.coderate )
+    {
+        sprintf( display_buf+len,"4/5" );//coderate
+    }
+    else if( 2 == g_sx1276_tx_pac_param.bandwidth )
+    {
+        sprintf( display_buf+len,"4/6" );//coderate
+    }
+    else if( 3 == g_sx1276_tx_pac_param.bandwidth )
+    {
+        sprintf( display_buf+len,"4/7" );//coderate
+    }
+    else if( 4 == g_sx1276_tx_pac_param.bandwidth )
+    {
+        sprintf( display_buf+len,"4/8" );//coderate
+    }
+    else
+    {
+        sprintf( display_buf+len,"codr0" );//coderate
+    }
+
+    len = strlen( display_buf );
+#endif
+
+    OLED_ShowString( 0,12, (u8*)display_buf,12 );
+    OLED_Refresh_Gram();
+
+    HAL_UART_SendBytes((uint8_t *)display_buf,strlen(display_buf));
+
+
+}
+
+void display_sx1276_rx_pac_parm( int8_t rssi,int8_t snr  )
+{
+
+    char display_buf[128]; //buffer for oled display
+
+    u8 len = 0 ;
+
+    g_sx1276_rx_pac_param.rssi = rssi;
+	g_sx1276_rx_pac_param.snr = snr;
+    //display some message on the oled
+
+    memset( display_buf,0,sizeof(display_buf) );
+
+    sprintf( display_buf+len,"rfq%d,",g_sx1276_rx_pac_param.freq/100000 );//chanel
+    len = strlen( display_buf );
+
+    //if( g_sx1276_tx_pac_param.datarate )
+    sprintf( display_buf+len,"%d,",g_sx1276_rx_pac_param.datarate );//datarate
+    len = strlen( display_buf );
+
+    if( 7 == g_sx1276_rx_pac_param.bandwidth )
+    {
+        g_sx1276_rx_pac_param.bandwidth = 125 ;
+    }
+    else if( 8 == g_sx1276_rx_pac_param.bandwidth )
+    {
+        g_sx1276_rx_pac_param.bandwidth = 250 ;
+    }
+    else if( 9 == g_sx1276_rx_pac_param.bandwidth )
+    {
+        g_sx1276_rx_pac_param.bandwidth = 500 ;
+    }
+    else
+    {
+        g_sx1276_rx_pac_param.bandwidth = 0 ;
+    }
+
+    sprintf( display_buf+len,"%d,",g_sx1276_rx_pac_param.bandwidth);//bandwidth
+    len = strlen( display_buf );
+  sprintf( display_buf+len,"%d,",g_sx1276_rx_pac_param.rssi);//bandwidth
+    len = strlen( display_buf );
+	  sprintf( display_buf+len,"%d",g_sx1276_rx_pac_param.snr);//bandwidth
+    len = strlen( display_buf );
+
+    OLED_ShowString( 0,24, (u8*)display_buf,12 );
+    OLED_Refresh_Gram();
+
+    HAL_UART_SendBytes((uint8_t *)display_buf,strlen(display_buf));
+
+
+}
+
+
 

@@ -477,7 +477,7 @@ void RtcRecoverMcuStatus( void )
 
           SystemClockConfig_STOP();
           //ÐèÒª»Ö¸´ÄÄÐ©??
-          LED_Init();
+          HalLedInit();
           SPI1_Init();
           SX1276IoInit( );
           //SX1276Init(RadioEvents_t * events) ????

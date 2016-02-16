@@ -5,6 +5,7 @@ Description: MCU RTC timer and low power modes management, for loraMAC schedule.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: 
 */
 
 #include <math.h>
