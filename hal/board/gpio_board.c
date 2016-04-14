@@ -5,7 +5,6 @@ Description: GPIO interrupt handle (for 1276/1279)
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: 
 */
 
 #include "board.h"
@@ -112,13 +111,6 @@ void EXTI4_15_IRQHandler( void )
   {
       RtcRecoverMcuStatus( );
   }
-
-	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_8) != RESET)
-	{
-		HAL_GPIO_EXTI_Callback(GPIO_PIN_8);
-		//halProcessKeyInterrupt();
-		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_8);
-	}
 
   //PB10 -- DIO0
 	/* EXTI line interrupt detected */

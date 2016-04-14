@@ -170,29 +170,6 @@ typedef struct SX1276_s
     RadioSettings_t Settings;
 }SX1276_t;
 
-
-typedef struct SX1276_Tx_Pac_Param_s
-{
-    uint32_t freq ;
-    uint32_t datarate ;
-    uint32_t bandwidth ;
-    uint8_t coderate ;
-
-}SX1276_Tx_Pac_Param_t ;
-
-typedef struct SX1276_Rx_Pac_Param_s
-{
-    uint32_t freq ;
-    uint32_t datarate ;
-    uint32_t bandwidth ;
-    uint8_t coderate ;
-    int8_t rssi ;
-    int8_t snr ;
-}SX1276_Rx_Pac_Param_t ;
-
-
-extern SX1276_Tx_Pac_Param_t g_sx1276_tx_pac_param ;
-extern SX1276_Rx_Pac_Param_t g_sx1276_rx_pac_param;
 /*!
  * Hardware IO IRQ callback function definition
  */
@@ -437,8 +414,5 @@ void SX1276WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
  * \param [IN] size Number of registers to be read
  */
 void SX1276ReadBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
-
-void display_sx1276_tx_pac_parm(  u16 frame_no  );
-void display_sx1276_rx_pac_parm( int8_t rssi,int8_t snr  );
 
 #endif // __SX1276_H__

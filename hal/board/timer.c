@@ -5,7 +5,6 @@ Description: Timer objects and scheduling management
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: 
 */
 #include "board.h"
 #include "rtc_board.h"

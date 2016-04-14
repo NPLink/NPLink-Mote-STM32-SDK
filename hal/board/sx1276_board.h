@@ -5,7 +5,6 @@ Description: SX1276 driver specific target board functions implementation
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
 */
 
 #ifndef __SX1276_BOARD_H__

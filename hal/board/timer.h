@@ -5,7 +5,6 @@ Description: Timer objects and scheduling management
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
 */
 
 #ifndef __TIMER_H__

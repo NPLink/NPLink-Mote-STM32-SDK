@@ -5,7 +5,6 @@ Description: MCU RTC timer and low power modes management, for loraMAC schedule.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
 */
 
 #ifndef __TIMER_BOARD_H__

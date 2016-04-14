@@ -5,7 +5,6 @@ Description: Main program routine
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: 
 */
 
 #include "osal.h"

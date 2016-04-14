@@ -5,14 +5,6 @@ Description: LoRa MAC layer user application interface.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
-
-history: V1.0 Robxr create file and add maintainer functions
-         V1.1 zhangjh Modify functions parameters type, include 4 functions as flow:
-              LoRaMac_setAppLayerParameter
-							LoRaMac_getAppLayerParameter
-							LoRaMac_setMacLayerParameter
-							LoRaMac_getMacLayerParameter
 
 */
 
@@ -42,7 +34,6 @@ history: V1.0 Robxr create file and add maintainer functions
 //define parameter IDs of LoRaMac mac layer
 #define PARAMETER_BANDS 				(u32)(1 << 0)
 #define PARAMETER_CHANNELS			(u32)(1 << 1)
-#define PARAMETER_ADR_SWITCH		(u32)(1 << 2)
 
 //define length of parameters
 #define APP_EUI_LEN						8
@@ -119,8 +110,6 @@ typedef struct LoRaMacMacPara
 {
 	Band_t bands[LORA_MAX_NB_BANDS];
 	ChannelParams_t channels[LORA_MAX_NB_CHANNELS];
-    bool lora_mac_adr_switch ;
-
 }LoRaMacMacPara_t;
 
 typedef struct LoRaMacAppPara
@@ -132,10 +121,12 @@ typedef struct LoRaMacAppPara
 	u8 	appSKey[APP_SKEY_LEN];
 }LoRaMacAppPara_t;
 
+
 /* function prototypes -----------------------------------------------*/
-u8 LoRaMac_setAppLayerParameter( void* pdata_in, u32 parameterIDs);
-u8 LoRaMac_getAppLayerParameter( void* pdata_out, u32 parameterIDs);
-u8 LoRaMac_setMacLayerParameter( void* pdata_in, u32 parameterIDs);
-u8 LoRaMac_getMacLayerParameter( void* pdata_out, u32 parameterIDs);
+u8 LoRaMac_setAppLayerParameter( void* pdata, u32 parameterIDs );
+u8 LoRaMac_getAppLayerParameter( void* pdata, u32 parameterIDs );
+u8 LoRaMac_setMacLayerParameter( void* pdata_in, u32 parameterIDs );
+u8 LoRaMac_getMacLayerParameter( void* pdata_out, u32 parameterIDs );
+
 
 #endif // __LORAMAC_H__

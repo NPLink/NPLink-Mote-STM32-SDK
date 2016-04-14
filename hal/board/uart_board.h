@@ -5,7 +5,7 @@ Description: Uart driver implementation, used for key press.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
+
 */
 /**************************************************
  * @fn		UART_Init
@@ -49,15 +49,9 @@ Maintainer: Robxr
 #define COUNTOF(__BUFFER__)   (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
 /* Exported functions ------------------------------------------------------- */
 
-extern uint8_t uart1_rxBuf[70];
-extern uint16_t uart1_Rxcount;
-
-
 void HAL_UART_MspInit(UART_HandleTypeDef *huart);
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart);
 void UART_Init(void);
 
-void HAL_UART_SendBytes(uint8_t * str,uint16_t count);
-uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag);
 
 #endif //__UART_BOARD_H__

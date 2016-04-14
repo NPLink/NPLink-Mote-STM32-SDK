@@ -157,6 +157,7 @@ extern void *osal_msg_dequeue( osal_msg_q_t *q_ptr );
 extern void osal_msg_push( osal_msg_q_t *q_ptr, void *msg_ptr );
 extern void osal_msg_extract( osal_msg_q_t *q_ptr, void *msg_ptr, void *prev_ptr );
 extern u8 osal_msg_enqueue_max( osal_msg_q_t *q_ptr, void *msg_ptr, u8 max );
+extern u8 osal_set_event( u8 task_id, u16 event_flag );
 extern u8 osal_clear_event( u8 task_id, u16 event_flag );
 extern u8 osal_int_enable( u8 interrupt_id );
 extern u8 osal_int_disable( u8 interrupt_id );

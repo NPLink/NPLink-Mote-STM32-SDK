@@ -5,7 +5,6 @@ Description:
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
 */
 
 #ifndef __DELAY_H__
