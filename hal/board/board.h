@@ -5,6 +5,7 @@ Description: Target board general functions implementation
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #ifndef __BOARD_H__
@@ -41,9 +42,9 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 /*!
  * Generic definition
  */
-#ifndef SUCCESS
-#define SUCCESS                                     1
-#endif
+//#ifndef SUCCESS
+//#define SUCCESS                                     1
+//#endif
 
 #ifndef FAIL
 #define FAIL                                        0

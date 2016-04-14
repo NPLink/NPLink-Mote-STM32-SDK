@@ -5,6 +5,7 @@ Description: SPI1 driver implementation, used for communication with sx1276/9
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #include "spi_board.h"
@@ -115,7 +116,8 @@ void SPI1_DeMspInit(SPI_HandleTypeDef *hspi)
   /*** Configure the GPIOs ***/
   /* Enable GPIO clock */
   //SPIx_GPIO_CLK_ENABLE();
-	SPIx_GPIO_CLK_DISABLE(); 
+  //SPIx_GPIO_CLK_DISABLE();  //20160317
+  SPIx_CLK_DISABLE();
 	
 	  /* Configure SPI SCK */
   GPIO_InitStruct.Pin = SPIx_SCK_PIN;

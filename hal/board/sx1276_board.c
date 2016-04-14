@@ -5,6 +5,7 @@ Description: SX1276 driver specific target board functions implementation
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #include "board.h"
@@ -112,13 +113,30 @@ void SX1276IoDeInit( void )
 {
 	 GPIO_InitTypeDef  GPIO_InitStruct;
 
-	//__GPIOB_CLK_DISABLE();
-
-  GPIO_InitStruct.Pin = (GPIO_PIN_0 |GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_10);
+  GPIO_InitStruct.Pin = (GPIO_PIN_0 |GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_10 );
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+
+	GPIO_InitStruct.Pin = GPIO_PIN_11;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);//PB11控制sx芯片的reset引脚
+	//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_11,GPIO_PIN_RESET);
+
+	
+	GPIO_InitStruct.Pin = GPIO_PIN_2;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); //PA2控制sx芯片的有源晶振
+	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_2,GPIO_PIN_RESET);
+	
+	__GPIOB_CLK_DISABLE();  
+	__GPIOA_CLK_DISABLE();   //20160317
 }
 
 uint8_t SX1276GetPaSelect( uint32_t channel )
@@ -168,10 +186,10 @@ void SX1276AntSwInit( void )
 
 void SX1276AntSwDeInit( void )
 {
-		//RADIO_ANT_SWITCH_HF -- PA1
+	//RADIO_ANT_SWITCH_HF -- PA1
 
   GPIO_InitTypeDef  GPIO_InitStruct;
-
+	
   //__GPIOA_CLK_DISABLE();
 
   GPIO_InitStruct.Pin = (GPIO_PIN_1);
@@ -180,6 +198,8 @@ void SX1276AntSwDeInit( void )
   GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET); //add by zjh
+	
+
 }
 
 void SX1276SetAntSw( uint8_t rxTx )

@@ -5,6 +5,7 @@ Description: GPIO interrupt handle (for 1276/1279)
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #include "board.h"
@@ -15,26 +16,6 @@ GpioIrqHandler *GpioIrq[16] ;
 
 void EXTI0_1_IRQHandler( void )
 {
-	#if 0
-#ifdef LOW_POWER_MODE_ENABLE
-    RtcRecoverMcuStatus( );
-
-#endif
-    if( EXTI_GetITStatus( EXTI_Line0 ) != RESET )
-    {
-        if( GpioIrq[0] != NULL )
-        {
-            GpioIrq[0]( );
-        }
-        EXTI_ClearITPendingBit( EXTI_Line0 );
-    }
-		#endif
-
-  if( TimerGetLowPowerEnable( ) == true )
-  {
-      RtcRecoverMcuStatus( );
-  }
-
   //PB0 -- DIO3
 	/* EXTI line interrupt detected */
 	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET)
@@ -60,25 +41,6 @@ void EXTI0_1_IRQHandler( void )
 
 void EXTI2_3_IRQHandler( void )
 {
-	#if 0
-#ifdef LOW_POWER_MODE_ENABLE
-    RtcRecoverMcuStatus( );
-#endif
-    if( EXTI_GetITStatus( EXTI_Line1 ) != RESET )
-    {
-        if( GpioIrq[1] != NULL )
-        {
-            GpioIrq[1]( );
-        }
-        EXTI_ClearITPendingBit( EXTI_Line1 );
-    }
-		#endif
-
-  if( TimerGetLowPowerEnable( ) == true )
-  {
-      RtcRecoverMcuStatus( );
-  }
-
   //PB2 -- DIO1
 	/* EXTI line interrupt detected */
 	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET)
@@ -93,24 +55,12 @@ void EXTI2_3_IRQHandler( void )
 
 void EXTI4_15_IRQHandler( void )
 {
-	#if 0
-#ifdef LOW_POWER_MODE_ENABLE
-    RtcRecoverMcuStatus( );
-#endif
-    if( EXTI_GetITStatus( EXTI_Line2 ) != RESET )
-    {
-        if( GpioIrq[2] != NULL )
-        {
-            GpioIrq[2]( );
-        }
-        EXTI_ClearITPendingBit( EXTI_Line2 );
-    }
-		#endif
-
-  if( TimerGetLowPowerEnable( ) == true )
-  {
-      RtcRecoverMcuStatus( );
-  }
+	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_8) != RESET)
+	{
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_8);
+		//halProcessKeyInterrupt();
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_8);
+	}
 
   //PB10 -- DIO0
 	/* EXTI line interrupt detected */

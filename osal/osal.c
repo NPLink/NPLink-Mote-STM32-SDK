@@ -851,7 +851,6 @@ u8 osal_init_system( void )
  *
  * @return  none
  */
-void TimerLowPowerHandler( void );
 void osal_start_system( void )
 {
 while(1)
@@ -881,8 +880,7 @@ while(1)
       tasksEvents[idx] |= events;  // Add back unprocessed events to the current task.
       HAL_EXIT_CRITICAL_SECTION(intState);
     }
-
-    //TimerLowPowerHandler( );
+	
   }
 }
 

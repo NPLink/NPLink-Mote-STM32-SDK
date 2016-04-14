@@ -5,6 +5,7 @@ Description: OLED driver implementation, used for display.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #include "oled_board.h"
@@ -153,8 +154,10 @@ void OLED_Clear(void)
 void OLED_Clear_Half(void)  
 {  
 	u8 i,n;  
-	for(i=0;i<8;i++)for(n=0;n<128;n++)
-		OLED_GRAM[n][i]=0X00;  
+	for(i=0;i<2;i++)
+		for(n=0;n<128;n++)
+		    OLED_GRAM[n][i]=0X00;  
+	OLED_Refresh_Gram();
 }
 
 /*********************************************************************
@@ -395,7 +398,7 @@ void OLED_Init(void)
 	OLED_WR_Byte(0x30,OLED_CMD); //[6:4] 000,0.65*vcc;001,0.77*vcc;011,0.83*vcc;
 
 	OLED_WR_Byte(0xA4,OLED_CMD); //È«¾ÖÏÔÊ¾¿ªÆô;bit0:1,¿ªÆô;0,¹Ø±Õ;(°×ÆÁ/ºÚÆÁ)
-	OLED_WR_Byte(0xA6,OLED_CMD); //ÉÏÔÊ¾·½Ê?bit0:1,·´ÏàÏÔÊ¾;0,Õý³£ÏÔÊ¾	  set display mode  0-Normal display   						   
+	OLED_WR_Byte(0xA6,OLED_CMD); //ÉÏÔÊ¾·½Ê½;bit0:1,·´ÏàÏÔÊ¾;0,Õý³£ÏÔÊ¾	  set display mode  0-Normal display   						   
 	OLED_WR_Byte(0xAF,OLED_CMD); //open display	 
 	OLED_Clear();
 }  

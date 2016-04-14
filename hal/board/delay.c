@@ -5,6 +5,7 @@ Description:
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #include "board.h"
@@ -12,9 +13,5 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 
 void DelayMs( uint32_t ms )
 {
-#ifdef LOW_POWER_MODE_ENABLE  
-    RtcDelayMs( ms );
-#else
-    TimerHwDelayMs( ms );
-#endif
+  TimerHwDelayMs( ms );
 }

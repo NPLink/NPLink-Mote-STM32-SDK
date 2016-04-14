@@ -432,7 +432,7 @@ void RtcEnterLowPowerStopMode( void )
       // Disable IRQ while the MCU is being deinitialized to prevent race issues
       __disable_irq( );
 
-      Radio.Sleep( );
+      //Radio.Sleep( );
       HAL_MspDeInit();
 
       __enable_irq( );
@@ -468,7 +468,7 @@ void RtcEnterLowPowerStopMode( void )
 
 void RtcRecoverMcuStatus( void )
 {
-  if( TimerGetLowPowerEnable( ) == true )
+  //if( TimerGetLowPowerEnable( ) == true )
   {
       //if( ( LowPowerDisableDuringTask == false ) && ( RtcTimerEventAllowsLowPower == true ) )
       {
@@ -477,9 +477,11 @@ void RtcRecoverMcuStatus( void )
 
           SystemClockConfig_STOP();
           //ÐèÒª»Ö¸´ÄÄÐ©??
-          LED_Init();
+          //HalLedInit();
           SPI1_Init();
-          SX1276IoInit( );
+		  TimerHwInit();
+          SX1276IoInit();
+		  SX1276Q1CtrlInit();
           //SX1276Init(RadioEvents_t * events) ????
 
           __enable_irq( );
@@ -867,6 +869,6 @@ void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
   RtcRecoverMcuStatus();
-  TimerIrqHandler( );
+  //TimerIrqHandler( );
 }
 

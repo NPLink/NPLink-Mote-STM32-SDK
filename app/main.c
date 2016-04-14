@@ -5,8 +5,10 @@ Description: Main program routine
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
+/* Includes ------------------------------------------------------------------*/
 #include "osal.h"
 #include "stm32l0xx_hal_rtc_ex.h"
 

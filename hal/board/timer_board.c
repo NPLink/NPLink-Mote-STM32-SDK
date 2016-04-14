@@ -5,6 +5,7 @@ Description: MCU RTC timer and low power modes management, for loraMAC schedule.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #include <math.h>
@@ -77,6 +78,7 @@ void TimerHwDeInit( void )
 {
     /* Deinitialize the timer */
     //TIM_DeInit( TIM2 );
+	HAL_TIM_Base_DeInit(&TimHandle);
 }
 
 uint32_t TimerHwGetMinimumTimeout( void )
@@ -153,7 +155,7 @@ void TimerIncrementTickCounter( void )
 
 void TimerHwEnterLowPowerStopMode( void )
 {
-#ifndef USE_DEBUGGER
-    __WFI( );
-#endif
+//#ifndef USE_DEBUGGER
+//    __WFI( );
+//#endif
 }

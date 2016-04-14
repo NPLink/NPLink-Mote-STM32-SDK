@@ -5,28 +5,45 @@ Description: Uart driver implementation, used for uart press.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-
+Maintainer: Robxr
 */
 #include "uart_board.h"
+#include <string.h>
+#include <stdio.h>
 
 extern __IO ITStatus UartReady;
 extern UART_HandleTypeDef UartHandle;
 
+uint8_t uart1_rxBuf[70];
+uint16_t uart1_Rxcount;
+
 void UART_Init(void)
 {
+  char *test_str = "\nUART_Init Done!\n";
 	UartHandle.Instance        = USARTx;
-  UartHandle.Init.BaudRate   = 9600;
-  UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-  UartHandle.Init.StopBits   = UART_STOPBITS_1;
-  UartHandle.Init.Parity     = UART_PARITY_NONE;
-  UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  UartHandle.Init.Mode       = UART_MODE_TX_RX;
+	UartHandle.Init.BaudRate   = 115200;
+	UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
+	UartHandle.Init.StopBits   = UART_STOPBITS_1;
+	UartHandle.Init.Parity     = UART_PARITY_NONE;
+	UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+	UartHandle.Init.Mode       = UART_MODE_TX_RX;
 
-  if(HAL_UART_Init(&UartHandle) != HAL_OK)
-  {
+	if(HAL_UART_Init(&UartHandle) != HAL_OK)
+	{
 
-  }
+	}
+		/* Enable the UART Parity Error Interrupt */
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_PE);
 
+	/* Enable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_ERR);
+
+	/* Enable the UART Data Register not empty Interrupt */
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
+
+	#ifdef USE_DEBUG
+	HAL_UART_SendBytes( (uint8_t *)test_str , strlen(test_str) );
+	#endif
 }
 
 
@@ -106,3 +123,27 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
   /* Set transmission flag: trasfer complete*/
   UartReady = SET;
 }
+
+void HAL_UART_SendBytes(uint8_t * str,uint16_t count)
+{
+	uint16_t i = 0 ;
+	for(i = 0;i<count;i++)
+	{
+		USART1->TDR =  (uint8_t)(str[i]); 
+		while( HAL_USART_GET_FLAG(USART1,UART_FLAG_TC)== RESET);
+	}	
+}
+
+uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag)
+{
+	if((usartx->ISR & flag) == flag)
+		return SET;
+	else
+		return RESET;
+}
+
+
+
+
+
+

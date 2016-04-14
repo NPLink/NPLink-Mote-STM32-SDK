@@ -28,7 +28,7 @@ extern "C"
 */
 #define TASK_NO_TASK      0xFF
   
-/*** Generic Status Return Values ***/    //´ý¸Ä
+/*** Generic Status Return Values ***/   
 #define SUCCESS                   0x00
 #define FAILURE                   0x01
 #define INVALIDPARAMETER          0x02
@@ -101,7 +101,7 @@ extern "C"
    * Set a Task Event
    */  
 #define SYS_EVENT_MSG               0x8000  // A message is waiting event
-#define INTS_ALL    0xFF
+#define INTS_ALL    								0xFF
 /*********************************************************************
 * TYPEDEFS
 */
@@ -157,7 +157,6 @@ extern void *osal_msg_dequeue( osal_msg_q_t *q_ptr );
 extern void osal_msg_push( osal_msg_q_t *q_ptr, void *msg_ptr );
 extern void osal_msg_extract( osal_msg_q_t *q_ptr, void *msg_ptr, void *prev_ptr );
 extern u8 osal_msg_enqueue_max( osal_msg_q_t *q_ptr, void *msg_ptr, u8 max );
-extern u8 osal_set_event( u8 task_id, u16 event_flag );
 extern u8 osal_clear_event( u8 task_id, u16 event_flag );
 extern u8 osal_int_enable( u8 interrupt_id );
 extern u8 osal_int_disable( u8 interrupt_id );

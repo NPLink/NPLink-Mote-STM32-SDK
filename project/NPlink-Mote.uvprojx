@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
 
-  <SchemaVersion>1.1</SchemaVersion>
+  <SchemaVersion>2.1</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
@@ -10,6 +10,7 @@
       <TargetName>NPLink-Mote</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32L051C8</Device>
@@ -47,7 +48,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>..\obj\</OutputDirectory>
-          <OutputName>nplink_node</OutputName>
+          <OutputName>NPLink-Mote</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -84,6 +85,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -145,7 +148,6 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>11</TargetSelection>
@@ -228,6 +230,7 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -362,9 +365,13 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
-              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER,USE_DEBUGGER, USE_BAND_868,USE_MODEM_LORA</Define>
+              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER,USE_DEBUG, USE_BAND_868</Define>
               <Undefine></Undefine>
               <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board</IncludePath>
             </VariousControls>
@@ -649,16 +656,6 @@
         <Group>
           <GroupName>app</GroupName>
           <Files>
-            <File>
-              <FileName>LoRaMacUsr.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\mac\LoRaMacUsr.h</FilePath>
-            </File>
-            <File>
-              <FileName>LoraMac_osal.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\mac\LoraMac_osal.h</FilePath>
-            </File>
             <File>
               <FileName>app_osal.c</FileName>
               <FileType>1</FileType>

@@ -5,6 +5,7 @@ Description: MCU RTC timer and low power modes management, for loraMAC schedule.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #ifndef __TIMER_BOARD_H__
@@ -19,6 +20,7 @@ typedef uint64_t TimerTime_t;
 
 #define TIMx                         TIM2
 #define TIMx_CLK_ENABLE              __TIM2_CLK_ENABLE
+#define TIMx_CLK_DISABLE             __TIM2_CLK_DISABLE
 
 /* Definition for TIMx's NVIC */
 #define TIMx_IRQn                    TIM2_IRQn

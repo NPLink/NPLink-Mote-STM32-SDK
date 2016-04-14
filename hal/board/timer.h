@@ -5,6 +5,7 @@ Description: Timer objects and scheduling management
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
+Maintainer: Robxr
 */
 
 #ifndef __TIMER_H__
@@ -96,10 +97,5 @@ void TimerSetValue( TimerEvent_t *obj, uint32_t value );
  * \retval time returns current time
  */
 TimerTime_t TimerGetCurrentTime( void );
-
-/*!
- * \brief Manages the entry into ARM cortex deep-sleep mode
- */
-void TimerLowPowerHandler( void );
 
 #endif  // __TIMER_H__

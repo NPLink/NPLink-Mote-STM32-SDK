@@ -381,11 +381,20 @@ ARM Macro Assembler    Page 6
   259 00000018                 END
               00000000 
               00000000 
-Command Line: --debug --xref --cpu=Cortex-M0+ --apcs=interwork --depend=..\obj\
-startup_stm32l051xx.d -o..\obj\startup_stm32l051xx.o -I"E:\keil 5\ARM\RV31\INC"
- -I"E:\keil 5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include" -I"E:\keil 5\ARM\PACK\Kei
-l\STM32L0xx_DFP\1.4.0\Device\Include" --predefine="__MICROLIB SETA 1" --list=..
-\lst\startup_stm32l051xx.lst ..\startup\startup_stm32l051xx.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0+ --apcs=inter
+work --depend=..\obj\startup_stm32l051xx.d -o..\obj\startup_stm32l051xx.o -IC:\
+Users\Administrator.IBULVELLVZXN3Z8\Desktop\NPLink-Mote-SDK-0.0.4.20160412_rele
+ase\NPLink-Mote-SDK-0.0.4.20160412_release\project\RTE -IC:\Keil_v5\ARM\PACK\Ke
+il\STM32L0xx_DFP\1.4.0\Device\Include -IC:\Keil_v5\ARM\CMSIS\Include --predefin
+e="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 516" --predefine="STM
+32L051xx SETA 1" --list=..\lst\startup_stm32l051xx.lst ..\startup\startup_stm32
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+l051xx.s
 
 
 
@@ -876,4 +885,4 @@ Symbol: __main
       At line 140 in file ..\startup\startup_stm32l051xx.s
 Comment: __main used once
 2 symbols
-381 symbols in table
+383 symbols in table

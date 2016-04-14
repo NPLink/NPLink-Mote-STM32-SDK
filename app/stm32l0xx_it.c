@@ -38,13 +38,18 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-//#include "main.h"
 #include "stm32l0xx_it.h"
 #include "osal_tick.h"
 #include "timer_board.h"
 #include "uart_board.h"
 #include "timer.h"
+#include "uart_board.h"
+#include "osal.h"
+#include "app_osal.h"
+#include "delay.h"
+#include "led_board.h"
 
+#include "LoraMac_osal.h"
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
   */
@@ -57,11 +62,12 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-//extern TIM_HandleTypeDef    TimHandle;
 extern RTC_HandleTypeDef RTCHandle;
 extern UART_HandleTypeDef UartHandle;
+extern  u8 txuartdataflag ;
 
-
+u8 step;
+u8 stepflag = 1;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -137,7 +143,7 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /*!
- * Timer2 IRQ handler
+ * Timer2 IRQ handler,Timer2 is used for MAC schedule
  */
 void TIM2_IRQHandler( void )
 {
@@ -152,13 +158,12 @@ void TIM2_IRQHandler( void )
 }
 
 /**
-  * @brief  This function handles RTC Auto wake-up interrupt request.
+  * @brief  This function handles RTC Auto wake-up interrupt request. RTC is used for low power mode timer
   * @param  None
   * @retval None
   */
 void RTC_IRQHandler(void)
 {
-  //HAL_RTCEx_WakeUpTimerIRQHandler(&RTCHandle);
 	HAL_RTC_AlarmIRQHandler(&RTCHandle);
 }
 
@@ -172,15 +177,111 @@ void RTC_IRQHandler(void)
   */
 void USART1_IRQHandler(void)
 {
-  HAL_UART_IRQHandler(&UartHandle);
+  UART_HandleTypeDef *huart = &UartHandle;
+  u8 ch = 0;
+
+  /* UART parity error interrupt occurred ------------------------------------*/
+  if((__HAL_UART_GET_IT(huart, UART_IT_PE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_PE) != RESET))
+  {
+          __HAL_UART_CLEAR_IT(huart, UART_CLEAR_PEF);
+
+          huart->ErrorCode |= HAL_UART_ERROR_PE;
+          /* Set the UART state ready to be able to start again the process */
+          huart->State = HAL_UART_STATE_READY;
+  }
+
+  /* UART frame error interrupt occured --------------------------------------*/
+  if((__HAL_UART_GET_IT(huart, UART_IT_FE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_ERR) != RESET))
+  {
+          __HAL_UART_CLEAR_IT(huart, UART_CLEAR_FEF);
+
+          huart->ErrorCode |= HAL_UART_ERROR_FE;
+          /* Set the UART state ready to be able to start again the process */
+          huart->State = HAL_UART_STATE_READY;
+  }
+
+  /* UART noise error interrupt occured --------------------------------------*/
+  if((__HAL_UART_GET_IT(huart, UART_IT_NE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_ERR) != RESET))
+  {
+          __HAL_UART_CLEAR_IT(huart, UART_CLEAR_NEF);
+
+          huart->ErrorCode |= HAL_UART_ERROR_NE;
+          /* Set the UART state ready to be able to start again the process */
+          huart->State = HAL_UART_STATE_READY;
+  }
+
+  /* UART Over-Run interrupt occured -----------------------------------------*/
+  if((__HAL_UART_GET_IT(huart, UART_IT_ORE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_ERR) != RESET))
+  {
+          __HAL_UART_CLEAR_IT(huart, UART_CLEAR_OREF);
+
+          huart->ErrorCode |= HAL_UART_ERROR_ORE;
+          /* Set the UART state ready to be able to start again the process */
+          huart->State = HAL_UART_STATE_READY;
+  }
+
+  /* Call UART Error Call back function if need be --------------------------*/
+  if(huart->ErrorCode != HAL_UART_ERROR_NONE)
+  {
+          HAL_UART_ErrorCallback(huart);
+  }
+
+  /* UART Wake Up interrupt occured ------------------------------------------*/
+  if((__HAL_UART_GET_IT(huart, UART_IT_WUF) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_WUF) != RESET))
+  {
+          __HAL_UART_CLEAR_IT(huart, UART_CLEAR_WUF);
+          /* Set the UART state ready to be able to start again the process */
+          huart->State = HAL_UART_STATE_READY;
+          HAL_UARTEx_WakeupCallback(huart);
+  }
+
+  /* UART in mode Receiver ---------------------------------------------------*/	
+  if((__HAL_UART_GET_IT(huart, UART_IT_RXNE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_RXNE) != RESET))
+  {
+		 ch = (uint8_t)(USART1->RDR );
+		 switch(step)
+			{
+				case 0:
+					if(ch == '$')
+					{
+					step++;
+					uart1_Rxcount= 0;
+					memset(uart1_rxBuf,0,80);//清空数据
+					uart1_rxBuf[uart1_Rxcount] = ch;
+					uart1_Rxcount++;
+					}
+					break;
+					
+				case 1:
+					uart1_rxBuf[uart1_Rxcount++] = ch;
+					if((uart1_rxBuf[uart1_Rxcount-1] == 0X0A)&& (uart1_rxBuf[uart1_Rxcount-2] == 0X0D))
+					{                        				
+					  txuartdataflag = 1; //osal_msg_send
+					  step = 0;
+
+						loraMAC_msg_t* pMsg = (loraMAC_msg_t*)osal_msg_allocate(8 + uart1_Rxcount);
+						if(NULL != pMsg)
+						{
+							osal_memset(pMsg,0,8 + uart1_Rxcount);
+							pMsg->msgID = TXREQUEST;
+							pMsg->msgLen = uart1_Rxcount;
+							osal_memcpy(pMsg->msgData,uart1_rxBuf,uart1_Rxcount);
+							osal_msg_send(LoraMAC_taskID,(u8*)pMsg);//发消息给MAC层，将串口数据通过无线发送出去
+						}
+					}
+					if(uart1_Rxcount >= 71)
+					{
+						step = 0;
+					}				
+					break;
+					
+				default:
+					step = 0;
+					break;
+			}
+  }
+
 }
 
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
