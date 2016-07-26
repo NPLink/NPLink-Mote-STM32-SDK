@@ -371,7 +371,7 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
-              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER,USE_DEBUG, USE_BAND_868</Define>
+              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER,USE_DEBUG, USE_BAND_780</Define>
               <Undefine></Undefine>
               <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board</IncludePath>
             </VariousControls>
@@ -646,6 +646,16 @@
         <Group>
           <GroupName>mac</GroupName>
           <Files>
+            <File>
+              <FileName>LoraMac_osal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\mac\LoraMac_osal.h</FilePath>
+            </File>
+            <File>
+              <FileName>LoRaMacUsr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\mac\LoRaMacUsr.h</FilePath>
+            </File>
             <File>
               <FileName>NPLink-Mote-Mac.lib</FileName>
               <FileType>4</FileType>

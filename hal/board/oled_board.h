@@ -49,6 +49,8 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 size,u8 mode);
 void OLED_ShowNum(u8 x,u8 y,u32 num,u8 len,u8 size);
 void OLED_ShowString(u8 x,u8 y,const u8 *p,u8 size);	 
 void oled_test( void );
+void OLED_Clear_Line(u8 lineNumber,u8 size);
+void OLED_Fill_All(void);
 
 #endif  //__OLED_BOARD_H
 	 

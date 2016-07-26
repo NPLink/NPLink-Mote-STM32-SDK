@@ -269,7 +269,7 @@ void USART1_IRQHandler(void)
 							osal_msg_send(LoraMAC_taskID,(u8*)pMsg);//发消息给MAC层，将串口数据通过无线发送出去
 						}
 					}
-					if(uart1_Rxcount >= 71)
+					if(uart1_Rxcount >= 70)
 					{
 						step = 0;
 					}				

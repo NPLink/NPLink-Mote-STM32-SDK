@@ -67,14 +67,18 @@ void APP_Init(u8 task_id)
 	#ifdef USE_DEBUG
 	debugEnable = TRUE;
 	#endif
-
-  //显示Mote ID
+	
+  //设置发射功率
+  g_appData.txPower = TX_POWER_20_DBM;
+ 	LoRaMac_setAppLayerParameter(&g_appData, PARAMETER_DEV_TXPOWER );
+ 	
+	//显示Mote ID
 	LoRaMac_getAppLayerParameter(&g_appData, PARAMETER_DEV_ADDR);
 	APP_ShowMoteID(g_appData.devAddr);
 
 	memset( &g_macData , 0 , sizeof(g_macData) );
-
-#if 1
+	
+#if 0
   //设置LORAMAC工作模式的参数(LoRa调制)
 	//设置信道1
 	g_macData.channels[0].Frequency = 779500000;//频点
@@ -92,6 +96,52 @@ void APP_Init(u8 task_id)
 	g_macData.lora_mac_adr_switch = TRUE;
 	//发送速率
 	g_macData.datarate = DR_5;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+#else
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 779500000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 779700000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 779900000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;
+	
+	
+	//设置信道4
+	g_macData.channels[3].Frequency = 780100000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 786500000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+	
+//设置信道6
+	g_macData.channels[5].Frequency = 786700000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;
+	
+	//设置信道7
+	g_macData.channels[6].Frequency = 786900000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+
+	//设置信道8
+	g_macData.channels[7].Frequency = 787100000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
 	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
@@ -115,30 +165,43 @@ void APP_Init(u8 task_id)
 		g_macData.datarate = DR_7;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = FALSE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+		//设置FSK参数
+		g_macData.fskDatarate= 200000;//200000;//FSK调制下的发送速率
+		g_macData.fskFdev = 100000;//100000;//FSK调制下的频偏
+		g_macData.fskBandwidth = 200000;//200000;//FSK调制下的接收带宽
+		g_macData.fskAfcBandwidth = 249999;//249999;//FSK调制下的AFC带宽
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH \
+																	| PARAMETER_DATARATE | PARAMETER_FSK_FDEV | PARAMETER_FSK_DATARATE \
+																	| PARAMETER_FSK_BANDEIDTH | PARAMETER_FSK_AFC_BANDWIDTH );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 #endif
+
 
 #if 0
 	//设置PHYMAC工作模式的参数(LoRa调制方式)
 	g_macData.phyFrequency = 779700000;//频率(Hz)
 	g_macData.phySF = 7; //扩频因子(7-12)
-	g_macData.phymodulation = MODULATION_LORA;//调制方式(FSK or LORA)
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_PHY_FREQUENCY | PARAMETER_PHY_SPREADING_FACTOR | PARAMETER_PHY_MODULATION_MODE );
-	//设置使用PhyMAC
+	g_macData.phyModulation = MODULATION_LORA;//调制方式(FSK or LORA)
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_PHY_FREQUENCY | PARAMETER_PHY_SPREADING_FACTOR \
+															| PARAMETER_PHY_MODULATION_MODE );	//设置使用PhyMAC
 	LoRaMac_setMode(MODE_PHY);
 #endif
 
 #if 0
-		//设置PHYMAC工作模式的参数(FSK调制方式)
-		g_macData.phyFrequency = 779700000;//频率(Hz)
-		g_macData.phymodulation = MODULATION_FSK;//调制方式(FSK or LORA)
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_PHY_FREQUENCY | PARAMETER_PHY_MODULATION_MODE );
-		//设置使用PhyMAC
-		LoRaMac_setMode(MODE_PHY);
+	//设置PHYMAC工作模式的参数(FSK调制方式)
+	g_macData.phyFrequency = 779700000;//频率(Hz)
+	g_macData.phyModulation = MODULATION_FSK;//调制方式(FSK or LORA)	
+	g_macData.fskDatarate= 100000;//FSK调制下的发送速率
+	g_macData.fskFdev = 50000;//FSK调制下的频偏
+	g_macData.fskBandwidth = 50000;//FSK调制下的带宽
+	g_macData.fskAfcBandwidth = 83333;//FSK调制下的AFC带宽
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_PHY_FREQUENCY | PARAMETER_PHY_MODULATION_MODE \
+															| PARAMETER_FSK_FDEV | PARAMETER_FSK_DATARATE | PARAMETER_FSK_BANDEIDTH \
+															| PARAMETER_FSK_AFC_BANDWIDTH );
+	//设置使用PhyMAC
+	LoRaMac_setMode(MODE_PHY);
 #endif
-
 
  	osal_set_event(APP_taskID,APP_PERIOD_SEND);//启动发包
 }
@@ -147,7 +210,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 {
  loraMAC_msg_t* pMsgSend = NULL;
  loraMAC_msg_t* pMsgRecieve = NULL;
-
+	
  u8 len = 0 ;
 
   //system event
@@ -162,11 +225,11 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		//tx done
 		case TXDONE :
 		case TXERR_STATUS:
-
+				
 				HalLedSet (HAL_LED_1, HAL_LED_MODE_ON);
 				if(send_num > 0)//通过LORA MAC模式发包
 				{
-					send_num--;
+					//send_num--;
 					//send a packet to LoRaMac osal (then can be send by the radio)
 					pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(sizeof(loraMAC_msg_t));
 					if(pMsgSend != NULL)
@@ -180,7 +243,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 						}
 						osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
 						osal_msg_deallocate((u8*)pMsgSend);
-
+    
 						#ifdef USE_DEBUG
 						HAL_UART_SendBytes("app send start...\n", osal_strlen("app send start...\n"));
 						#endif
@@ -188,10 +251,10 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 				}
 				else
 				{
-
-					#if  0  //PHYMAC 模式发包
-
-					if(mode != MODE_PHY)    //通过PHY模式发包
+				
+					#if  1//PHYMAC 模式发包
+					
+					if(mode != MODE_PHY)//通过PHY模式发包
 					{
 						LoRaMac_setMode(MODE_PHY);
 						uucount = 5;
@@ -202,44 +265,46 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 						if(uucount == 0)
 						{
 							send_num = 10;
-							LoRaMac_setMode(0);
-							osal_set_event(APP_taskID,0x0001);
+							LoRaMac_setMode(MODE_LORAMAC);
+							osal_set_event(APP_taskID,APP_PERIOD_SEND);
 							//Radio.Sleep();
 						}
 					}
-
+					
 					#else//低功耗测试
-
+					
 					#ifdef USE_LOW_POWER_MODE
 					RtcSetTimeout(20000000);
 					LoRaMac_setlowPowerMode(TRUE);
 					RtcEnterLowPowerStopMode();
 					#endif
 					LoRaMac_setMode(MODE_LORAMAC);
-
+					
 					send_num = 10;
 					osal_set_event(APP_taskID,APP_PERIOD_SEND);
 					Radio.Sleep();
-
+					
 					#endif
 				}
-
+				
 				HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
-
+				
 				break;
 
 				//rx done
 			case RXDONE:
-
+				
 				HalLedSet (HAL_LED_2, HAL_LED_MODE_ON);
 				OLED_Clear_Half();//先把屏幕下一半清空
 				APP_ShowMoteID(g_appData.devAddr);
 				len = 0 ;
 				g_number++ ;
-				memset(Rx_buf , 0 ,sizeof(Rx_buf));
+				memset(Rx_buf , 0 ,sizeof(Rx_buf));                               
 				osal_memcpy(Rx_buf,pMsgRecieve->msgData,pMsgRecieve->msgLen);
 				len = pMsgRecieve->msgLen;
 				Rx_buf[len] = 0;
+				OLED_Clear_Line(4,12);//先清空数据，再显示
+				OLED_Clear_Line(5,12);
 				OLED_ShowString( 0,36, (u8*)Rx_buf,12 );
 				OLED_Refresh_Gram();
 				#ifdef USE_DEBUG
@@ -247,22 +312,9 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 				HAL_UART_SendBytes((uint8_t *)Rx_buf,strlen(Rx_buf));
 				#endif
 				HalLedSet (HAL_LED_2, HAL_LED_MODE_OFF);
-
+			
 				break;
-				/*
-				//发送失败
-             case TXERR_STATUS:
-             {
-                //TODO MOTE send packet error deal
-                memset( tmp_buf ,0 ,sizeof(tmp_buf) );
-                sprintf( (char *)tmp_buf,"send err ret=%d,no=%d",pMsgRecieve->msgData[0],
-                                                                 pMsgRecieve->msgData[1]+( pMsgRecieve->msgData[2]<<8 ) );
-                OLED_ShowString( 0,36,tmp_buf,12 );
-                OLED_Refresh_Gram();
-                break;
-             }
-				*/
-
+				
         default:
 			    break;
 			}
