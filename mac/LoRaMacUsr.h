@@ -61,21 +61,27 @@ history: V1.0 Robxr create file and add maintainer functions
 
 //define parameter IDs of LoRaMac application layer
 //定义应用层参数ID号
-#define PARAMETER_DEV_ADDR 						(u32)(1 << 0)//设备地址(4B)
-#define PARAMETER_APP_EUI							(u32)(1 << 1)//LoRaWAN AppEUI值
-#define PARAMETER_APP_KEY							(u32)(1 << 2)//LoRaWAN AppKey，当使用over-the-air activation时使用
-#define PARAMETER_NWK_SKEY						(u32)(1 << 3)//LoRaWAN NwkSkey，当activation by personalization时使用
-#define PARAMETER_APP_SKEY						(u32)(1 << 4)//LoRaWAN AppSkey，当activation by personalization时使用
+#define PARAMETER_DEV_ADDR 								(u32)(1 << 0)//设备地址(4B)
+#define PARAMETER_DEV_EUI									(u32)(1 << 1)
+#define PARAMETER_APP_EUI									(u32)(1 << 2)//LoRaWAN AppEUI值
+#define PARAMETER_APP_KEY									(u32)(1 << 3)//LoRaWAN AppKey，当使用over-the-air activation时使用
+#define PARAMETER_NWK_SKEY								(u32)(1 << 4)//LoRaWAN NwkSkey，当activation by personalization时使用
+#define PARAMETER_APP_SKEY								(u32)(1 << 5)//LoRaWAN AppSkey，当activation by personalization时使用
+#define PARAMETER_DEV_TXPOWER 				    (u32)(1 << 6)//数据发送功率
 
 //define parameter IDs of LoRaMac mac layer
 //定义MAC层参数ID号
-#define PARAMETER_BANDS 								(u32)(1 << 0)//LoRaWAN MAC模式工作时使用的频点，当前支持1个频点
-#define PARAMETER_CHANNELS							(u32)(1 << 1)//LoRaWAN MAC模式工作时，在频点上使用的信道，当前支持最多16个信道
-#define PARAMETER_DATARATE							(u32)(1 << 2)//LoRaWAN MAC模式工作时，发送速率
-#define PARAMETER_ADR_SWITCH						(u32)(1 << 3)//LoRaWAN MAC模式工作时，ADR使能或去使能
-#define PARAMETER_PHY_FREQUENCY			    (u32)(1 << 4)//phy MAC模式工作时，工作频点
-#define PARAMETER_PHY_SPREADING_FACTOR	(u32)(1 << 5)//phy MAC模式工作时，LORA调制方式下的扩频因子，有效值为7-12
-#define PARAMETER_PHY_MODULATION_MODE		(u32)(1 << 6)//phy MAC模式工作时，调制方式的选择
+#define PARAMETER_BANDS 									(u32)(1 << 0)//LoRaWAN MAC模式工作时使用的频点，当前支持1个频点
+#define PARAMETER_CHANNELS								(u32)(1 << 1)//LoRaWAN MAC模式工作时，在频点上使用的信道，当前支持最多16个信道
+#define PARAMETER_DATARATE								(u32)(1 << 2)//LoRaWAN MAC模式工作时，发送速率
+#define PARAMETER_ADR_SWITCH							(u32)(1 << 3)//LoRaWAN MAC模式工作时，ADR使能或去使能
+#define PARAMETER_PHY_FREQUENCY			      (u32)(1 << 4)//phy MAC模式工作时，工作频点
+#define PARAMETER_PHY_SPREADING_FACTOR		(u32)(1 << 5)//phy MAC模式工作时，LORA调制方式下的扩频因子，有效值为7-12
+#define PARAMETER_PHY_MODULATION_MODE			(u32)(1 << 6)//phy MAC模式工作时，调制方式的选择
+#define PARAMETER_FSK_FDEV								(u32)(1 << 7)//FSK调制方式下的频偏
+#define PARAMETER_FSK_DATARATE						(u32)(1 << 8)//FSK调制方式下的速率
+#define PARAMETER_FSK_BANDEIDTH						(u32)(1 << 9)//FSK调制方式下的带宽
+#define PARAMETER_FSK_AFC_BANDWIDTH				(u32)(1 << 10)//FSK调制方式下的afcbandwidth
 
 //define length of parameters
 //定义参数长度
@@ -85,18 +91,19 @@ history: V1.0 Robxr create file and add maintainer functions
 #define NWK_SKEY_LEN								16
 #define APP_SKEY_LEN								16
 
-#define LORA_MAX_NB_BANDS 							1//only one band is supported currentlly.
-#define LORA_MAX_NB_CHANNELS 						16//only 16 channels are supported currentlly.
+#define LORA_MAX_NB_BANDS 					1//only one band is supported currentlly.
+#define LORA_MAX_NB_CHANNELS 				16//only 16 channels are supported currentlly.
 
-/*!
- * LoRaMac TxPower definition
- */
-#define TX_POWER_20_DBM                             0
-#define TX_POWER_14_DBM                             1
-#define TX_POWER_11_DBM                             2
-#define TX_POWER_08_DBM                             3
-#define TX_POWER_05_DBM                             4
-#define TX_POWER_02_DBM                             5
+//define TxPower 
+//定义发送功率
+#define TX_POWER_MAX_INDEX					5
+
+#define TX_POWER_20_DBM             0
+#define TX_POWER_14_DBM             1
+#define TX_POWER_11_DBM             2
+#define TX_POWER_08_DBM            	3
+#define TX_POWER_05_DBM             4
+#define TX_POWER_02_DBM             5
 
 /*!
  * LoRaMac datarates definition
@@ -141,6 +148,7 @@ typedef struct
     uint8_t Band;       // Band index
 }PACKED ChannelParams_t;
 
+/* typedef -----------------------------------------------------------*/
 typedef struct LoRaMacMacPara
 {
 	Band_t bands[LORA_MAX_NB_BANDS];//LORA MAC的频点定义
@@ -149,12 +157,17 @@ typedef struct LoRaMacMacPara
 	bool lora_mac_adr_switch ;//LORA MAC的ADR使能与否
 	u32 phyFrequency;//phy MAC的频点定义
 	u8  phySF;//phy MAC的LORA调制方式时的扩频因子 
-	u8  phymodulation;//phy MAC的调制方式定义
+	u8  phyModulation;//phy MAC的调制方式定义
+	u32 fskFdev;
+	u32 fskDatarate;
+	u32 fskBandwidth;
+	u32 fskAfcBandwidth;
 }LoRaMacMacPara_t;
 
 typedef struct LoRaMacAppPara
 {
 	u32 devAddr;//设备地址
+	u8  txPower;//发送功率
 	u8  appEUI[APP_EUI_LEN];//LoRaWAN AppEUI值
 	u8 	appKey[APP_KEY_LEN];//LoRaWAN AppKey
 	u8 	nwkSKey[NWK_SKEY_LEN];//LoRaWAN NwkSkey
