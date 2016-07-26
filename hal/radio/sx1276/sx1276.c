@@ -1404,7 +1404,6 @@ void SX1276OnDio0Irq( void )
                         break;
                     }
                 }
-									SX1276.Settings.FskPacketHandler.RssiValue	= SX1276ReadRssi(MODEM_FSK);
 
                 // Read received packet size
                 if( ( SX1276.Settings.FskPacketHandler.Size == 0 ) && ( SX1276.Settings.FskPacketHandler.NbBytes == 0 ) )
@@ -1893,8 +1892,7 @@ void display_sx1276_tx_pac_parm( u16 frame_no  )
 
     len = strlen( display_buf );
 #endif
-		
-		OLED_Clear_Line(2,12);
+
     OLED_ShowString( 0,12, (u8*)display_buf,12 );
     OLED_Refresh_Gram();
 
@@ -1948,8 +1946,7 @@ void display_sx1276_rx_pac_parm( int8_t rssi,int8_t snr  )
     len = strlen( display_buf );
 	  sprintf( display_buf+len,"%d",g_sx1276_rx_pac_param.snr);//bandwidth
     len = strlen( display_buf );
-		
-		OLED_Clear_Line(3,12);
+
     OLED_ShowString( 0,24, (u8*)display_buf,12 );
     OLED_Refresh_Gram();
 
