@@ -100,6 +100,138 @@ void APP_Init(u8 task_id)
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 #else
+
+#if defined( USE_BAND_433 )
+
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 433175000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 433375000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 433575000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;
+	//设置信道4
+	g_macData.channels[3].Frequency = 433775000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 434175000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+	//设置信道6
+	g_macData.channels[5].Frequency = 434375000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;
+	//设置信道7
+	g_macData.channels[6].Frequency = 434575000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+	//设置信道8
+	g_macData.channels[7].Frequency = 434775000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+	
+#elif defined( USE_BAND_470 )
+
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 470300000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 470500000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 470700000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;
+	//设置信道4
+	g_macData.channels[3].Frequency = 470900000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 471100000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+	//设置信道6
+	g_macData.channels[5].Frequency = 471300000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;	
+	//设置信道7
+	g_macData.channels[6].Frequency = 471500000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+	//设置信道8
+	g_macData.channels[7].Frequency = 471700000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+	
+#elif defined( USE_BAND_490 )
+
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 490300000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 490500000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 490700000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;	
+	//设置信道4
+	g_macData.channels[3].Frequency = 490900000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 491100000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+	//设置信道6
+	g_macData.channels[5].Frequency = 491300000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;	
+	//设置信道7
+	g_macData.channels[6].Frequency = 491500000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+	//设置信道8
+	g_macData.channels[7].Frequency = 491700000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+	
+#elif defined( USE_BAND_780 )
+
 	//设置LORAMAC工作模式的参数(LoRa调制)
 	//设置信道1
 	g_macData.channels[0].Frequency = 779500000;//频点
@@ -112,9 +244,7 @@ void APP_Init(u8 task_id)
 	//设置信道3
 	g_macData.channels[2].Frequency = 779900000;
 	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
-	g_macData.channels[2].Band = 0;
-	
-	
+	g_macData.channels[2].Band = 0;	
 	//设置信道4
 	g_macData.channels[3].Frequency = 780100000;
 	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
@@ -122,18 +252,15 @@ void APP_Init(u8 task_id)
 	//设置信道5
 	g_macData.channels[4].Frequency = 786500000;
 	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
-	g_macData.channels[4].Band = 0;
-	
-//设置信道6
+	g_macData.channels[4].Band = 0;	
+	//设置信道6
 	g_macData.channels[5].Frequency = 786700000;
 	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
 	g_macData.channels[5].Band = 0;
-	
 	//设置信道7
 	g_macData.channels[6].Frequency = 786900000;
 	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
 	g_macData.channels[6].Band = 0;
-
 	//设置信道8
 	g_macData.channels[7].Frequency = 787100000;
 	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
@@ -145,6 +272,138 @@ void APP_Init(u8 task_id)
 	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
+	
+#elif defined( USE_BAND_868 )
+
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 868100000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 868300000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 868500000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;	
+	//设置信道4
+	g_macData.channels[3].Frequency = 868700000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 869100000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+  //设置信道6
+	g_macData.channels[5].Frequency = 869300000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;
+	//设置信道7
+	g_macData.channels[6].Frequency = 869500000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+	//设置信道8
+	g_macData.channels[7].Frequency = 869700000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+	
+#elif defined( USE_BAND_US915 )
+
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 902300000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 902500000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 902700000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;
+	//设置信道4
+	g_macData.channels[3].Frequency = 902900000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 907300000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+  //设置信道6
+	g_macData.channels[5].Frequency = 907500000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;
+	//设置信道7
+	g_macData.channels[6].Frequency = 907700000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+	//设置信道8
+	g_macData.channels[7].Frequency = 907900000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+	
+#elif defined( USE_BAND_AU915 )
+
+	//设置LORAMAC工作模式的参数(LoRa调制)
+	//设置信道1
+	g_macData.channels[0].Frequency = 915200000;//频点
+	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
+	g_macData.channels[0].Band = 0;
+	//设置信道2
+	g_macData.channels[1].Frequency = 915400000;
+	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[1].Band = 0;
+	//设置信道3
+	g_macData.channels[2].Frequency = 915600000;
+	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[2].Band = 0;
+	//设置信道4
+	g_macData.channels[3].Frequency = 915800000;
+	g_macData.channels[3].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[3].Band = 0;
+	//设置信道5
+	g_macData.channels[4].Frequency = 916000000;
+	g_macData.channels[4].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[4].Band = 0;
+	//设置信道6
+	g_macData.channels[5].Frequency = 916200000;
+	g_macData.channels[5].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[5].Band = 0;
+	//设置信道7
+	g_macData.channels[6].Frequency = 916400000;
+	g_macData.channels[6].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[6].Band = 0;
+	//设置信道8
+	g_macData.channels[7].Frequency = 916600000;
+	g_macData.channels[7].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
+	g_macData.channels[7].Band = 0;
+	//发送速率
+	g_macData.datarate = DR_5;
+	//ADR开启或关闭
+	g_macData.lora_mac_adr_switch = TRUE;
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	//设置使用LoRaMAC
+	LoRaMac_setMode(MODE_LORAMAC);
+	
+#endif	
+	
 #endif
 
 #if 0

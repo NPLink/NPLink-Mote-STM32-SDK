@@ -647,6 +647,11 @@
           <GroupName>mac</GroupName>
           <Files>
             <File>
+              <FileName>NPLink-Mote-Mac.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\mac\NPLink-Mote-Mac.lib</FilePath>
+            </File>
+            <File>
               <FileName>LoraMac_osal.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\mac\LoraMac_osal.h</FilePath>
@@ -655,11 +660,6 @@
               <FileName>LoRaMacUsr.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\mac\LoRaMacUsr.h</FilePath>
-            </File>
-            <File>
-              <FileName>NPLink-Mote-Mac.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\mac\NPLink-Mote-Mac.lib</FilePath>
             </File>
           </Files>
         </Group>

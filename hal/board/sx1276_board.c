@@ -222,7 +222,7 @@ void SX1276SetAntSw( uint8_t rxTx )
     HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_SET);
   }
 	
-#elif ( defined( USE_BAND_780 ) || defined( USE_BAND_868 ) || defined( USE_BAND_915 ) )
+#elif ( defined( USE_BAND_780 ) || defined( USE_BAND_868 ) || defined( USE_BAND_US915 ) || defined( USE_BAND_AU915 ) )
 
 	if( rxTx != 0 ) // 1: TX, 0: RX
   {
