@@ -142,6 +142,15 @@ void OLED_Clear(void)
 		OLED_Refresh_Gram();
 }
 
+void OLED_Clear_char(void)  
+{  
+	u8 i,n;  
+	for(i=0;i<1;i++)for(n=70;n<128;n++)
+		OLED_GRAM[n][i]=0X00;  
+		OLED_Refresh_Gram();
+}
+
+
 /*********************************************************************
  * @fn		OLED_Fill_All
  *
@@ -277,7 +286,7 @@ void OLED_DrawPoint(u8 x,u8 y,u8 t)
  * @brief 	draw  Diagonal coordinates point of  the filling region ,make sure x1<=x2,y1<=y2,0<=x1<=127,0<=y1<=63
  *
  * @param 	u8 x1    Diagonal coordinates
- *
+ *a
  * @param 	u8 y1    Diagonal coordinates
  *
  * @param 	u8 x2    Diagonal coordinates

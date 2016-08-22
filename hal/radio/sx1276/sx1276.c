@@ -45,9 +45,10 @@ typedef struct
     uint8_t  RegValue;
 }FskBandwidth_t;
 
-
 SX1276_Tx_Pac_Param_t g_sx1276_tx_pac_param ;
 SX1276_Rx_Pac_Param_t g_sx1276_rx_pac_param;
+u8 work_frequence;
+
 /*
  * Private functions prototypes
  */

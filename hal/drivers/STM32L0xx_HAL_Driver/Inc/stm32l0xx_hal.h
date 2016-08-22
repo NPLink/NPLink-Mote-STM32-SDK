@@ -56,6 +56,10 @@
   */ 
 
 /* Exported types ------------------------------------------------------------*/
+extern __IO uint32_t uwTick;
+
+//extern unsigned long volatile g_dwSysTick; /*!< system tick count */
+
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup HAL_Exported_Constants
   * @{
@@ -184,6 +188,32 @@
   * @retval The new state of __FLAG__ (TRUE or FALSE).
   */
 #define __HAL_SYSCFG_GET_FLAG(__FLAG__) (((SYSCFG->CFGR3) & (__FLAG__)) == (__FLAG__))
+
+/**
+ * @brief get system tick count from system boot
+ * @return current system tick
+ */
+				
+/* time_after(a,b) returns true if the time a is after time b.*/
+#define time_after(a,b) ((int32_t)(b) -	(int32_t)(a) < 0 )
+
+/* time before(a,b) returns true if the time a is before time b */
+#define time_before(a,b)	time_after(b,a)
+
+/* time_after_eq returns true if the time a is after or equal to time b */
+#define time_after_eq(a,b) ((int32_t)(a) - (int32_t)(b) >= 0 )	
+
+/* time_before_eq returns true if the time a is before or equal to time b */
+#define time_before_eq(a,b)	time_after_eq(b,a)
+
+/**
+ * @brief check whether time is out
+ * @param [in] StartTime - the base time
+ * @param [in] TimeOut  - tick count for time out
+ * @return true on time is out, else false.
+ */
+#define IsTimeOut(StartTime, TimeOut)	time_after(uwTick, StartTime + TimeOut)
+
 
 /**                  
   * @}

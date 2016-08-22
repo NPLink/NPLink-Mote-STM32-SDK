@@ -19,6 +19,7 @@ Maintainer: Robxr
 
 #include "stm32l0xx_hal.h"
 #include "stm32l0xx_hal_uart.h"
+#include "fifo.h"
 
 #define USARTx                            USART1
 #define USARTx_CLK_ENABLE()              __USART1_CLK_ENABLE();
@@ -40,18 +41,21 @@ Maintainer: Robxr
 #define USARTx_IRQn                      USART1_IRQn
 #define USARTx_IRQHandler                USART1_IRQHandler
 
-/* Size of Trasmission buffer */
-#define TXBUFFERSIZE                      (COUNTOF(aTxBuffer) - 1)
-/* Size of Reception buffer */
-#define RXBUFFERSIZE                      TXBUFFERSIZE
+#define RECEIVE_BUFF_LEN			(512)
+extern struct bFIFO usart1_receive_fifo;
+extern uint8_t usart1_receive_buffer[RECEIVE_BUFF_LEN];
+
+#define USART1_ReceiveFifo_Length()	  bFIFO_GetLength(&usart1_receive_fifo)
+#define USART1_ReceiveFifo_Init()		  bFIFO_Init(&usart1_receive_fifo, usart1_receive_buffer, sizeof(usart1_receive_buffer), USART1_IRQn)
+#define USART1_ReceiveFifo_Clear()		bFIFO_Clear(&usart1_receive_fifo)
+#define USART1_ReceiveFifo_Glance(a)	bFIFO_Glance(&usart1_receive_fifo, a)
+#define USART1_ReceiveFifo_GetByte(a)	bFIFO_GetByte(&usart1_receive_fifo, a)
+#define USART1_ReceiveFifo_PutByte(a)	bFIFO_PutByte(&usart1_receive_fifo, a)
   
 /* Exported macro ------------------------------------------------------------*/
 #define COUNTOF(__BUFFER__)   (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
+
 /* Exported functions ------------------------------------------------------- */
-
-extern uint8_t uart1_rxBuf[70];
-extern uint16_t uart1_Rxcount;
-
 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart);
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart);
@@ -59,5 +63,9 @@ void UART_Init(void);
 
 void HAL_UART_SendBytes(uint8_t * str,uint16_t count);
 uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag);
+
+uint32_t HAL_UART_ReceiveLength(void);
+int32_t HAL_UART_ReceiveChar(uint8_t *c, uint32_t timeout);
+void HAL_UART_ReceiveString(void);
 
 #endif //__UART_BOARD_H__

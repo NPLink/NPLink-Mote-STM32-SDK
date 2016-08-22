@@ -48,6 +48,7 @@
 #include "app_osal.h"
 #include "loraMAC_osal.h"
 #include "hal_osal.h"
+#include "usart1_osal.h"
 /*********************************************************************
  * GLOBAL VARIABLES
  */
@@ -57,6 +58,7 @@ const pTaskEventHandlerFn tasksArr[] =
 {
 	HardWare_ProcessEvent,
 	LoRaMAC_ProcessEvent,
+	Usart1_ProcessEvent,
 	APP_ProcessEvent,
 };
 
@@ -83,6 +85,7 @@ void osalInitTasks( void )
 	osal_memset( tasksEvents, 0, (sizeof( u16 ) * tasksCnt) );
 	HardWare_Init(taskID++);
 	LoRaMAC_Init(taskID++);
+	Usart1_Init(taskID++);
 	APP_Init(taskID++);
 }
 

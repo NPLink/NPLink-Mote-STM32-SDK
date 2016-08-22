@@ -8,6 +8,8 @@
 #include "osal_app.h "
 #include "osal_tick.h "
 #include "osal_time.h "
+#include "iwdg_board.h"
+#include "stm32l0xx_hal_iwdg.h"
 
 /*********************************************************************
  * MACROS
@@ -857,11 +859,17 @@ while(1)
   {
     u8 idx = 0;
     osalTimeUpdate();
+		
+		#ifndef USE_DEBUG
+			HAL_IWDG_Refresh(&IwdgHandle);
+		#endif
+		
     do {
       if (tasksEvents[idx])  // Task is highest priority that is ready.
       {
         break;
       }
+
     } while (++idx < tasksCnt);
 
     if (idx < tasksCnt)

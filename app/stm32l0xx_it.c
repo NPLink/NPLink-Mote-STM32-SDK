@@ -64,7 +64,6 @@
 /* Private variables ---------------------------------------------------------*/
 extern RTC_HandleTypeDef RTCHandle;
 extern UART_HandleTypeDef UartHandle;
-extern  u8 txuartdataflag ;
 
 u8 step;
 u8 stepflag = 1;
@@ -92,8 +91,12 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* Go to infinite loop when Hard Fault exception occurs */
+  #ifdef USE_DEBUG
+	HAL_UART_SendBytes("HardFault...\n", osal_strlen("HardFault...\n"));
+  #endif
   while (1)
   {
+  
   }
 }
 
@@ -178,7 +181,13 @@ void RTC_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   UART_HandleTypeDef *huart = &UartHandle;
-  u8 ch = 0;
+
+	/* UART in mode Receiver ---------------------------------------------------*/	
+  if((__HAL_UART_GET_IT(huart, UART_IT_RXNE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_RXNE) != RESET))
+  {
+				__HAL_UART_CLEAR_IT(huart, UART_IT_RXNE);
+        USART1_ReceiveFifo_PutByte( (uint8_t)(USART1->RDR ) );
+  }
 
   /* UART parity error interrupt occurred ------------------------------------*/
   if((__HAL_UART_GET_IT(huart, UART_IT_PE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_PE) != RESET))
@@ -235,53 +244,6 @@ void USART1_IRQHandler(void)
           HAL_UARTEx_WakeupCallback(huart);
   }
 
-  /* UART in mode Receiver ---------------------------------------------------*/	
-  if((__HAL_UART_GET_IT(huart, UART_IT_RXNE) != RESET) && (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_RXNE) != RESET))
-  {
-		 ch = (uint8_t)(USART1->RDR );
-		 switch(step)
-			{
-				case 0:
-					if(ch == '$')
-					{
-					step++;
-					uart1_Rxcount= 0;
-					memset(uart1_rxBuf,0,80);//清空数据
-					uart1_rxBuf[uart1_Rxcount] = ch;
-					uart1_Rxcount++;
-					}
-					break;
-					
-				case 1:
-					uart1_rxBuf[uart1_Rxcount++] = ch;
-					if((uart1_rxBuf[uart1_Rxcount-1] == 0X0A)&& (uart1_rxBuf[uart1_Rxcount-2] == 0X0D))
-					{                        				
-					  txuartdataflag = 1; //osal_msg_send
-					  step = 0;
-
-						loraMAC_msg_t* pMsg = (loraMAC_msg_t*)osal_msg_allocate(8 + uart1_Rxcount);
-						if(NULL != pMsg)
-						{
-							osal_memset(pMsg,0,8 + uart1_Rxcount);
-							pMsg->msgID = TXREQUEST;
-							pMsg->msgLen = uart1_Rxcount;
-							osal_memcpy(pMsg->msgData,uart1_rxBuf,uart1_Rxcount);
-							osal_msg_send(LoraMAC_taskID,(u8*)pMsg);//发消息给MAC层，将串口数据通过无线发送出去
-						}
-					}
-					if(uart1_Rxcount >= 70)
-					{
-						step = 0;
-					}				
-					break;
-					
-				default:
-					step = 0;
-					break;
-			}
-  }
-
 }
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

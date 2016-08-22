@@ -53,6 +53,11 @@ history: V1.0 Robxr create file and add maintainer functions
 #define MODULATION_FSK								0 
 #define MODULATION_LORA								1
 
+//define working frequency of mote (HF or LF)
+//定义射频芯片的工作频率,可以是高频或低频
+#define LOW_FREQUENCE									0 
+#define HIGH_FREQUENCE								1			
+
 //define return status
 //定义MAC层处理状态
 #define LORAMAC_USR_SUCCESS							0//成功

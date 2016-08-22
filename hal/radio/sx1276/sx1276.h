@@ -190,9 +190,10 @@ typedef struct SX1276_Rx_Pac_Param_s
     int8_t snr ;
 }SX1276_Rx_Pac_Param_t ;
 
-
 extern SX1276_Tx_Pac_Param_t g_sx1276_tx_pac_param ;
 extern SX1276_Rx_Pac_Param_t g_sx1276_rx_pac_param;
+extern u8 work_frequence;
+
 /*!
  * Hardware IO IRQ callback function definition
  */

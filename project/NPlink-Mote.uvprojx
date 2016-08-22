@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>STM32L051C8</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32L0xx_DFP.1.4.0</PackID>
+          <PackID>Keil.STM32L0xx_DFP.1.5.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x10000) IRAM(0x20000000,0x2000) CPUTYPE("Cortex-M0+") CLOCK(32000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -371,9 +371,9 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
-              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER,USE_DEBUG, USE_BAND_780</Define>
+              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER, USE_BAND_780</Define>
               <Undefine></Undefine>
-              <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board</IncludePath>
+              <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board;..\hal\radio\sx1276</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -526,6 +526,11 @@
               <FileType>1</FileType>
               <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rtc.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32l0xx_hal_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_iwdg.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -606,6 +611,21 @@
               <FileType>1</FileType>
               <FilePath>..\hal\board\utilities.c</FilePath>
             </File>
+            <File>
+              <FileName>iwdg_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\iwdg_board.c</FilePath>
+            </File>
+            <File>
+              <FileName>fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\fifo.c</FilePath>
+            </File>
+            <File>
+              <FileName>at.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\at.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -647,11 +667,6 @@
           <GroupName>mac</GroupName>
           <Files>
             <File>
-              <FileName>NPLink-Mote-Mac.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\mac\NPLink-Mote-Mac.lib</FilePath>
-            </File>
-            <File>
               <FileName>LoraMac_osal.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\mac\LoraMac_osal.h</FilePath>
@@ -660,6 +675,11 @@
               <FileName>LoRaMacUsr.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\mac\LoRaMacUsr.h</FilePath>
+            </File>
+            <File>
+              <FileName>NPLink-Mote-Mac.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\mac\NPLink-Mote-Mac.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -690,6 +710,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\app\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart1_osal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\usart1_osal.c</FilePath>
             </File>
           </Files>
         </Group>

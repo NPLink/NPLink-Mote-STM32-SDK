@@ -11,11 +11,11 @@ Maintainer: Robxr
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx.h"
 #include "stm32l0xx_hal_rtc.h"
+#include "stm32l0xx_hal_iwdg.h"
 #include <string.h>
 #include <stdio.h>
 
 #include "osal_memory.h"
-#include "osal.h"
 #include "oled_board.h"
 #include "app_osal.h"
 #include "loraMac_osal.h"
@@ -26,6 +26,9 @@ Maintainer: Robxr
 #include "uart_board.h"
 #include "led_board.h"
 #include "rtc_board.h"
+#include "iwdg_board.h"
+#include "sx1276.h"
+#include "at.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -35,25 +38,14 @@ Maintainer: Robxr
 
 /* Private variables ---------------------------------------------------------*/
 u8 APP_taskID;
-char Rx_buf[64]; //buffer for oled display
 u32 Rxpacket_count = 0 ;
-u8* RecieveBuff_flag = NULL;
-__IO ITStatus UartReady = RESET;
-u8 aTxBuffer[] = "uart test, hello!\n";
-u8 aRxBuffer[RXBUFFERSIZE];
-u8 g_number = 0;
+u8 debugEnable = FALSE; 
 
 LoRaMacAppPara_t g_appData;//定义APP 参数结构体
 LoRaMacMacPara_t g_macData;//定义MAC参数结构体
 
-u8 send_num = 10;
-uint8_t txuartdataflag ;
-u8 uucount = 5;
-u8 debugEnable = FALSE;
-
 /* variables -----------------------------------------------------------*/
 extern UART_HandleTypeDef UartHandle;
-extern u8 send_num ;
 extern u8 APP_taskID;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,30 +69,7 @@ void APP_Init(u8 task_id)
 	APP_ShowMoteID(g_appData.devAddr);
 
 	memset( &g_macData , 0 , sizeof(g_macData) );
-	
-#if 0
-  //设置LORAMAC工作模式的参数(LoRa调制)
-	//设置信道1
-	g_macData.channels[0].Frequency = 779500000;//频点
-	g_macData.channels[0].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 ); //速率范围:((最高速率<<4) | (最低速率))
-	g_macData.channels[0].Band = 0;
-	//设置信道2
-	g_macData.channels[1].Frequency = 779700000;
-	g_macData.channels[1].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
-	g_macData.channels[1].Band = 0;
-	//设置信道3
-	g_macData.channels[2].Frequency = 779900000;
-	g_macData.channels[2].DrRange.Value = ( ( DR_5 << 4 ) | DR_0 );
-	g_macData.channels[2].Band = 0;
-	//ADR开启或关闭
-	g_macData.lora_mac_adr_switch = TRUE;
-	//发送速率
-	g_macData.datarate = DR_5;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
-	//设置使用LoRaMAC
-	LoRaMac_setMode(MODE_LORAMAC);
-#else
-
+#if 1
 #if defined( USE_BAND_433 )
 
 	//设置LORAMAC工作模式的参数(LoRa调制)
@@ -403,9 +372,8 @@ void APP_Init(u8 task_id)
 	LoRaMac_setMode(MODE_LORAMAC);
 	
 #endif	
-	
-#endif
 
+#endif
 #if 0
 		//设置LORAMAC工作模式的参数(FSK调制)
 		//设置信道1
@@ -463,6 +431,7 @@ void APP_Init(u8 task_id)
 #endif
 
  	osal_set_event(APP_taskID,APP_PERIOD_SEND);//启动发包
+
 }
 
 u16 APP_ProcessEvent( u8 task_id, u16 events )
@@ -471,6 +440,10 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
  loraMAC_msg_t* pMsgRecieve = NULL;
 	
  u8 len = 0 ;
+ static u16 txErrorNum = 0;
+ static u16 txTimeoutNum = 0;
+ u8 txErrorString[20];
+ u8 Rx_buf[64]; //buffer for oled display
 
   //system event
   if(events & SYS_EVENT_MSG)
@@ -483,54 +456,37 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		{
 		//tx done
 		case TXDONE :
-		case TXERR_STATUS:
-				
-				HalLedSet (HAL_LED_1, HAL_LED_MODE_ON);
-				if(send_num > 0)//通过LORA MAC模式发包
-				{
-					//send_num--;
-					//send a packet to LoRaMac osal (then can be send by the radio)
-					pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(sizeof(loraMAC_msg_t));
-					if(pMsgSend != NULL)
+				#if 1//连续发包模式
+				display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );//第二行显示发送参数
+				osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
+				#if 0
+					if( g_at_set_tx == true )
 					{
-						osal_memset(pMsgSend,0,sizeof(loraMAC_msg_t));
-						pMsgSend->msgID = TXREQUEST;
-						pMsgSend->msgLen = 70;
-						for(u8 dataCount = 0; dataCount < 70; dataCount++)
+						HalLedSet (HAL_LED_1, HAL_LED_MODE_ON);
+						display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
+						//send a packet to LoRaMac osal (then can be send by the radio)
+						pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(sizeof(loraMAC_msg_t));
+						if(pMsgSend != NULL)
 						{
-							pMsgSend->msgData[dataCount] = dataCount;
-						}
-						osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
-						osal_msg_deallocate((u8*)pMsgSend);
-    
-						#ifdef USE_DEBUG
-						HAL_UART_SendBytes("app send start...\n", osal_strlen("app send start...\n"));
-						#endif
-					}
-				}
-				else
-				{
-				
-					#if  1//PHYMAC 模式发包
-					
-					if(mode != MODE_PHY)//通过PHY模式发包
-					{
-						LoRaMac_setMode(MODE_PHY);
-						uucount = 5;
-					}
-					else
-					{
-						uucount--;
-						if(uucount == 0)
-						{
-							send_num = 10;
-							LoRaMac_setMode(MODE_LORAMAC);
-							osal_set_event(APP_taskID,APP_PERIOD_SEND);
-							//Radio.Sleep();
+							osal_memset(pMsgSend,0,sizeof(loraMAC_msg_t));
+							pMsgSend->msgID = TXREQUEST;
+							pMsgSend->msgLen = 8;
+							for(u8 dataCount = 0; dataCount < 8; dataCount++)
+							{
+								pMsgSend->msgData[dataCount] = dataCount;
+							}
+							osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
+							osal_msg_deallocate((u8*)pMsgSend);
+			
+							HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
+							
+							#ifdef USE_DEBUG
+							HAL_UART_SendBytes("app send start...\n", osal_strlen("app send start...\n"));
+							#endif
 						}
 					}
-					
-					#else//低功耗测试
+					#endif 	
+				#else//低功耗测试
 					
 					#ifdef USE_LOW_POWER_MODE
 					RtcSetTimeout(20000000);
@@ -538,38 +494,51 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 					RtcEnterLowPowerStopMode();
 					#endif
 					LoRaMac_setMode(MODE_LORAMAC);
-					
-					send_num = 10;
 					osal_set_event(APP_taskID,APP_PERIOD_SEND);
 					Radio.Sleep();
 					
-					#endif
-				}
+				#endif
+	
+					break;
 				
-				HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
-				
-				break;
+				//发送错误，未找到空闲信道
+				case TXERR_STATUS:
+					txErrorNum++;
+					sprintf((char*)txErrorString,"TxErr:%d,txTO:%d",txErrorNum,txTimeoutNum);
+					OLED_Clear_Line(5,12);
+					OLED_ShowString( 0,48, (u8*)txErrorString,12 );
+					OLED_Refresh_Gram();
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
+					break;
 
-				//rx done
+				
+				//发送错误，发送超时
+				case TXTIMEOUT:
+					txTimeoutNum++;
+					sprintf((char*)txErrorString,"TxErr:%d,txTO:%d",txErrorNum,txTimeoutNum);
+					OLED_Clear_Line(5,12);
+					OLED_ShowString( 0,48, (u8*)txErrorString,12 );
+					OLED_Refresh_Gram();
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
+					break;
+
+			//rx done
 			case RXDONE:
 				
 				HalLedSet (HAL_LED_2, HAL_LED_MODE_ON);
+				display_sx1276_rx_pac_parm( pMsgRecieve->msgRxRssi,pMsgRecieve->msgRxSnr);//第3行显示接收参数
 				OLED_Clear_Half();//先把屏幕下一半清空
 				APP_ShowMoteID(g_appData.devAddr);
 				len = 0 ;
-				g_number++ ;
 				memset(Rx_buf , 0 ,sizeof(Rx_buf));                               
 				osal_memcpy(Rx_buf,pMsgRecieve->msgData,pMsgRecieve->msgLen);
 				len = pMsgRecieve->msgLen;
 				Rx_buf[len] = 0;
 				OLED_Clear_Line(4,12);//先清空数据，再显示
 				OLED_Clear_Line(5,12);
-				OLED_ShowString( 0,36, (u8*)Rx_buf,12 );
+				OLED_ShowString( 0,36, (u8*)Rx_buf,12 );//第4行显示数据内容
 				OLED_Refresh_Gram();
-				#ifdef USE_DEBUG
-				HAL_UART_SendBytes("\n",1);
-				HAL_UART_SendBytes((uint8_t *)Rx_buf,strlen(Rx_buf));
-				#endif
+			
 				HalLedSet (HAL_LED_2, HAL_LED_MODE_OFF);
 			
 				break;
@@ -585,7 +554,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 	}
 
 	//send a packet event
-	if(events & APP_PERIOD_SEND)
+	if(events & APP_PERIOD_SEND)  
 	{
 		//RedLED(OFF);
 		 HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
@@ -595,8 +564,8 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		{
 			osal_memset(pMsgSend,0,sizeof(loraMAC_msg_t));
 			pMsgSend->msgID = TXREQUEST;
-			pMsgSend->msgLen = 70;
-			for(u8 dataCount = 0; dataCount < 70; dataCount++)
+			pMsgSend->msgLen = 8;
+			for(u8 dataCount = 0; dataCount < 8; dataCount++)
 			{
 				pMsgSend->msgData[dataCount] = dataCount;
 			}
@@ -606,10 +575,10 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		#ifdef USE_DEBUG
 		HAL_UART_SendBytes("app send start...\n", osal_strlen("app send start...\n"));
 		#endif
-	  //osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,1000);//延时继续发送
+	  //osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,300);//延时继续发送
 		return (events ^ APP_PERIOD_SEND);
-	}
-
+	}	
+	
 	return 0 ;
 }
 

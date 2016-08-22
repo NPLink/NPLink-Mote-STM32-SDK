@@ -79,9 +79,12 @@
                                         |(__STM32L0xx_HAL_VERSION_RC))
 
 #define IDCODE_DEVID_MASK    ((uint32_t)0x00000FFF)
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static __IO uint32_t uwTick;
+//static __IO uint32_t uwTick;
+ __IO uint32_t uwTick;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 

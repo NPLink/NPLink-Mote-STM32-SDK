@@ -60,6 +60,7 @@
 #include "uart_board.h"
 #include "stm32l0xx_hal_uart.h"
 #include "key_board.h"
+#include "iwdg_board.h"
 
 void SystemClock_Config(void);
 void SystemPower_Config(void);
@@ -83,7 +84,6 @@ void UartSetConfig(void);
 /* Private variables ---------------------------------------------------------*/
 RTC_HandleTypeDef RTCHandle;
 UART_HandleTypeDef UartHandle;
-
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -115,6 +115,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
 
   /* Enable the TIMx global Interrupt */
   HAL_NVIC_EnableIRQ(TIMx_IRQn);
+
 }
 
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim)
@@ -122,8 +123,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim)
 	TIMx_CLK_DISABLE();
 	HAL_NVIC_DisableIRQ(TIMx_IRQn);
 }
-
-
 
 /**
   * @brief  Initializes the Global MSP.
@@ -160,10 +159,14 @@ void HAL_MspInit(void)
 	//sx1279 active crystal initiate and power on
 	SX1276Q1CtrlInit();
 
+	#ifndef USE_DEBUG
+	IWDG_Configuration();
+	#endif
+	
 	#ifdef USE_LOW_POWER_MODE
   RtcInit( );
 	#endif
-
+	
   TimerHwInit( );
 }
 
@@ -211,13 +214,13 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /* Enable HSI Oscillator and activate PLL with HSI as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSEState = RCC_HSE_OFF;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSIState = RCC_HSI_OFF;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_4;
-  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_8;
+  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_3;
   RCC_OscInitStruct.HSICalibrationValue = 0x10;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);
 

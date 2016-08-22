@@ -14,7 +14,6 @@ update history: V0.2 zhangjh
 #include "gpio_board.h"
 #include "oled_board.h"
 #include "led_board.h"
-
 #include "app_osal.h"
 
 

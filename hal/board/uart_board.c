@@ -5,21 +5,31 @@ Description: Uart driver implementation, used for uart press.
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 
-Maintainer: Robxr
+Maintainer: Robxr 
 */
-#include "uart_board.h"
 #include <string.h>
 #include <stdio.h>
+#include "uart_board.h"
+#include "stm32l0xx_hal.h"
+#include "loraMAC_osal.h"
+#include "error.h"
+#include "osal.h"
+#include "at.h"
 
-extern __IO ITStatus UartReady;
+#define RECV_MAX_LEN 64
+
 extern UART_HandleTypeDef UartHandle;
 
-uint8_t uart1_rxBuf[70];
-uint16_t uart1_Rxcount;
+struct bFIFO usart1_receive_fifo;
+uint8_t usart1_receive_buffer[RECEIVE_BUFF_LEN];
+
+uint8_t head_frame_date = 0;
+uint8_t head_frame_at = 0;
+uint8_t recv_buf[RECV_MAX_LEN];
 
 void UART_Init(void)
 {
-  char *test_str = "\nUART_Init Done!\n";
+  //char *test_str = "\nUART_Init Done!\n";
 	UartHandle.Instance        = USARTx;
 	UartHandle.Init.BaudRate   = 115200;
 	UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
@@ -40,7 +50,9 @@ void UART_Init(void)
 
 	/* Enable the UART Data Register not empty Interrupt */
 	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
-
+	
+	USART1_ReceiveFifo_Init( );
+	
 	#ifdef USE_DEBUG
 	HAL_UART_SendBytes( (uint8_t *)test_str , strlen(test_str) );
 	#endif
@@ -116,12 +128,10 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
   /* Set transmission flag: trasfer complete*/
-  UartReady = SET;
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
   /* Set transmission flag: trasfer complete*/
-  UartReady = SET;
 }
 
 void HAL_UART_SendBytes(uint8_t * str,uint16_t count)
@@ -134,6 +144,7 @@ void HAL_UART_SendBytes(uint8_t * str,uint16_t count)
 	}	
 }
 
+
 uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag)
 {
 	if((usartx->ISR & flag) == flag)
@@ -142,8 +153,92 @@ uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag)
 		return RESET;
 }
 
+uint32_t HAL_UART_ReceiveLength(void)
+{
+	return(USART1_ReceiveFifo_Length());
+}
+
+int32_t HAL_UART_ReceiveChar(uint8_t *c, uint32_t timeout)
+{
+   /* uint32_t ThisTime = HAL_GetTick();
+
+    do{
+		if(USART1_ReceiveFifo_Length())
+		{
+			USART1_ReceiveFifo_GetByte(c);
+            return ERR_SUCCESS;
+		}
+    }while(!IsTimeOut(ThisTime, timeout));
+    
+	return ERR_TIME_OUT;*/
+
+		if(USART1_ReceiveFifo_Length())
+		{
+			USART1_ReceiveFifo_GetByte(c);
+      return ERR_SUCCESS;
+		}
+		return ERR_TIME_OUT; 
+}
 
 
+void HAL_UART_ReceiveString()
+{
+	uint8_t temp_Byte;
+	uint8_t count = 0;
+	uint8_t len = RECV_MAX_LEN;
+	
+	while((len--) > 0)
+	{
+		USART1_ReceiveFifo_GetByte(&temp_Byte);
 
+		if(temp_Byte == '$') 
+		{
+		  head_frame_date = 1;		
+		}
+		else if(temp_Byte == 'A') 
+		{
+		  head_frame_at = 1;		
+		}
+		
+		if( head_frame_date == 1)
+		{
+			recv_buf[count] = temp_Byte;
+			if((recv_buf[count] == 0x0A) && (recv_buf[count - 1] == 0x0D))
+			{
+				head_frame_date = 0;
+				loraMAC_msg_t* pMsg = (loraMAC_msg_t*)osal_msg_allocate(8 + count );
+				if(NULL != pMsg)
+				{
+					osal_memset(pMsg,0,8 + count + 1 );
+					pMsg->msgID = TXREQUEST;
+					pMsg->msgLen = count + 1;
+					osal_memcpy(pMsg->msgData,recv_buf,count + 1);
+					osal_msg_send(LoraMAC_taskID,(u8*)pMsg);//发消息给MAC层，将串口数据通过无线发送出去
+				}
+				 osal_memset(recv_buf,0,RECV_MAX_LEN);
+				 count = 0;
+			}
+			else
+			{
+				count++;
+			}
+		}
+		if( head_frame_at == 1)	
+		{
+			recv_buf[count] = temp_Byte;
+			if((recv_buf[count] == 0x0A) && (recv_buf[count - 1] == 0x0D) && (recv_buf[1] == 'T'))
+			{
+				head_frame_at = 0;
+				at_command(recv_buf,count+1);
+				osal_memset(recv_buf,0,RECV_MAX_LEN);
+				count = 0;
+			}
+			else
+			{
+				count++;
+			}
+		}
+	}
+}
 
 
