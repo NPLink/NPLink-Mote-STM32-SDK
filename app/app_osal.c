@@ -459,35 +459,8 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		//tx done
 		case TXDONE :
 				#if 1//连续发包模式
-				display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
-				osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
-				#if 0
-					if( g_at_set_tx == true )
-					{
-						HalLedSet (HAL_LED_1, HAL_LED_MODE_ON);
-						display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
-						//send a packet to LoRaMac osal (then can be send by the radio)
-						pMsgSend = (loraMAC_msg_t*)osal_msg_allocate(sizeof(loraMAC_msg_t));
-						if(pMsgSend != NULL)
-						{
-							osal_memset(pMsgSend,0,sizeof(loraMAC_msg_t));
-							pMsgSend->msgID = TXREQUEST;
-							pMsgSend->msgLen = 50;
-							for(u8 dataCount = 0; dataCount < 50; dataCount++)
-							{
-								pMsgSend->msgData[dataCount] = dataCount;
-							}
-							osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
-							osal_msg_deallocate((u8*)pMsgSend);
-			
-							HalLedSet (HAL_LED_1, HAL_LED_MODE_OFF);
-							
-							#ifdef USE_DEBUG
-							HAL_UART_SendBytes("app send start...\n", osal_strlen("app send start...\n"));
-							#endif
-						}
-					}
-					#endif 	
+					display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000); 	
 				#else//低功耗测试
 					
 					#ifdef USE_LOW_POWER_MODE
