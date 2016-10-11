@@ -406,6 +406,7 @@ void APP_Init(u8 task_id)
 
 
 #if 0
+
 	//设置PHYMAC工作模式的参数(LoRa调制方式)
 	g_macData.phyFrequency = 779700000;//频率(Hz)
 	g_macData.phySF = 7; //扩频因子(7-12)
@@ -416,11 +417,12 @@ void APP_Init(u8 task_id)
 #endif
 
 #if 0
+
 	//设置PHYMAC工作模式的参数(FSK调制方式)
 	g_macData.phyFrequency = 779700000;//频率(Hz)
 	g_macData.phyModulation = MODULATION_FSK;//调制方式(FSK or LORA)	
-	g_macData.fskDatarate= 100000;//FSK调制下的发送速率
-	g_macData.fskFdev = 50000;//FSK调制下的频偏
+	g_macData.fskDatarate= 50000;//FSK调制下的发送速率
+	g_macData.fskFdev = 25000;//FSK调制下的频偏
 	g_macData.fskBandwidth = 50000;//FSK调制下的带宽
 	g_macData.fskAfcBandwidth = 83333;//FSK调制下的AFC带宽
 	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_PHY_FREQUENCY | PARAMETER_PHY_MODULATION_MODE \
@@ -457,7 +459,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		//tx done
 		case TXDONE :
 				#if 1//连续发包模式
-				display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );//第二行显示发送参数
+				display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
 				osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
 				#if 0
 					if( g_at_set_tx == true )
@@ -470,8 +472,8 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 						{
 							osal_memset(pMsgSend,0,sizeof(loraMAC_msg_t));
 							pMsgSend->msgID = TXREQUEST;
-							pMsgSend->msgLen = 8;
-							for(u8 dataCount = 0; dataCount < 8; dataCount++)
+							pMsgSend->msgLen = 50;
+							for(u8 dataCount = 0; dataCount < 50; dataCount++)
 							{
 								pMsgSend->msgData[dataCount] = dataCount;
 							}

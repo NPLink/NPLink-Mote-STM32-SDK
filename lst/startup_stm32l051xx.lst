@@ -383,11 +383,18 @@ ARM Macro Assembler    Page 6
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0+ --apcs=inter
 work --depend=..\obj\startup_stm32l051xx.d -o..\obj\startup_stm32l051xx.o -IC:\
-Users\Administrator.C5AB2JZPOECEFUS\Desktop\20160821发布版\NPLink-Mote-SDK-1.0.
-0.20160822_release\project\RTE -IF:\Keil_v5\ARM\PACK\Keil\STM32L0xx_DFP\1.5.0\D
-evice\Include -IF:\Keil_v5\ARM\CMSIS\Include --predefine="__MICROLIB SETA 1" --
-predefine="__UVISION_VERSION SETA 516" --predefine="STM32L051xx SETA 1" --list=
-..\lst\startup_stm32l051xx.lst ..\startup\startup_stm32l051xx.s
+Users\Administrator.C5AB2JZPOECEFUS\Desktop\20160821发布版\测试功耗\1.0.1发布版
+\发布\NPLink-Mote-SDK-1.0.1.20161011_release\project\RTE -IF:\keil5\ARM\PACK\Ke
+il\STM32L0xx_DFP\1.4.0\Device\Include -IF:\keil5\ARM\CMSIS\Include --predefine=
+"__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 516" --predefine="STM32
+L051xx SETA 1" --list=..\lst\startup_stm32l051xx.lst ..\startup\startup_stm32l0
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+51xx.s
 
 
 
