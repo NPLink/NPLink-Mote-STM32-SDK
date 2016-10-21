@@ -404,7 +404,6 @@ void APP_Init(u8 task_id)
 		LoRaMac_setMode(MODE_LORAMAC);
 #endif
 
-
 #if 0
 
 	//设置PHYMAC工作模式的参数(LoRa调制方式)
@@ -460,7 +459,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		case TXDONE :
 				#if 1//连续发包模式
 					display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
-					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000); 	
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);	
 				#else//低功耗测试
 					
 					#ifdef USE_LOW_POWER_MODE

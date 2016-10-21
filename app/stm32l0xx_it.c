@@ -48,7 +48,7 @@
 #include "app_osal.h"
 #include "delay.h"
 #include "led_board.h"
-
+#include "hal_osal.h"
 #include "LoraMac_osal.h"
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
@@ -156,7 +156,7 @@ void TIM2_IRQHandler( void )
 
 	if( TimerTickCounter == TimeoutCntValue )
 	{
-	  TimerIrqHandler( );
+	  osal_set_event(HardWare_taskID, HAL_EVENT_TIMER);
 	}
 }
 

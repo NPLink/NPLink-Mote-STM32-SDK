@@ -1945,7 +1945,7 @@ void display_sx1276_rx_pac_parm( int8_t rssi,int8_t snr  )
 
     sprintf( display_buf+len,"%d,",g_sx1276_rx_pac_param.bandwidth);//bandwidth
     len = strlen( display_buf );
-  sprintf( display_buf+len,"%d,",g_sx1276_rx_pac_param.rssi);//bandwidth
+		sprintf( display_buf+len,"%d,",g_sx1276_rx_pac_param.rssi);//bandwidth
     len = strlen( display_buf );
 	  sprintf( display_buf+len,"%d",g_sx1276_rx_pac_param.snr);//bandwidth
     len = strlen( display_buf );

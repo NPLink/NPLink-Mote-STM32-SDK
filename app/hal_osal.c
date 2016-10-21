@@ -13,6 +13,7 @@ Maintainer: Robxr
 #include <stdio.h>
 #include "osal_memory.h"
 #include "osal.h"
+#include "timer.h"
 #include "hal_osal.h"
 #include "led_board.h"
 #include "key_board.h"
@@ -67,6 +68,13 @@ u16 HardWare_ProcessEvent( u8 task_id, u16 events )
         #endif
 
         return events ^ HAL_KEY_EVENT;
+    }
+		
+		if (events & HAL_EVENT_TIMER)
+    {
+				TimerIrqHandler( );
+			
+        return events ^ HAL_EVENT_TIMER;
     }
 
     return 0 ;

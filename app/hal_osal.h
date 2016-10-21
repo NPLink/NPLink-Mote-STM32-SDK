@@ -14,6 +14,8 @@ Maintainer: Robxr
 /* Variables ---------------------------------------------------------*/
 extern u8 HardWare_taskID;
 
+#define HAL_EVENT_TIMER 0x0001
+
 /* Functions ---------------------------------------------------------*/
 void HardWare_Init(u8 task_id);
 u16 HardWare_ProcessEvent( u8 task_id, u16 events );
