@@ -58,6 +58,11 @@ history: V1.0 Robxr create file and add maintainer functions
 #define LOW_FREQUENCE									0 
 #define HIGH_FREQUENCE								1			
 
+//define working frequency of mote (confirmer or unconfirmer)
+//定义发送数据包的类型,可以是确认包或非确认包
+#define UNCONFIRMED_UP								2 
+#define CONFIRMED_UP								  4	
+
 //define return status
 //定义MAC层处理状态
 #define LORAMAC_USR_SUCCESS							0//成功
@@ -75,18 +80,19 @@ history: V1.0 Robxr create file and add maintainer functions
 #define PARAMETER_DEV_TXPOWER 				    (u32)(1 << 6)//数据发送功率
 
 //define parameter IDs of LoRaMac mac layer
-//定义MAC层参数ID号
+//定义MAC层参数ID号confirmed_retries
 #define PARAMETER_BANDS 									(u32)(1 << 0)//LoRaWAN MAC模式工作时使用的频点，当前支持1个频点
 #define PARAMETER_CHANNELS								(u32)(1 << 1)//LoRaWAN MAC模式工作时，在频点上使用的信道，当前支持最多16个信道
 #define PARAMETER_DATARATE								(u32)(1 << 2)//LoRaWAN MAC模式工作时，发送速率
-#define PARAMETER_ADR_SWITCH							(u32)(1 << 3)//LoRaWAN MAC模式工作时，ADR使能或去使能
-#define PARAMETER_PHY_FREQUENCY			      (u32)(1 << 4)//phy MAC模式工作时，工作频点
-#define PARAMETER_PHY_SPREADING_FACTOR		(u32)(1 << 5)//phy MAC模式工作时，LORA调制方式下的扩频因子，有效值为7-12
-#define PARAMETER_PHY_MODULATION_MODE			(u32)(1 << 6)//phy MAC模式工作时，调制方式的选择
-#define PARAMETER_FSK_FDEV								(u32)(1 << 7)//FSK调制方式下的频偏
-#define PARAMETER_FSK_DATARATE						(u32)(1 << 8)//FSK调制方式下的速率
-#define PARAMETER_FSK_BANDEIDTH						(u32)(1 << 9)//FSK调制方式下的带宽
-#define PARAMETER_FSK_AFC_BANDWIDTH				(u32)(1 << 10)//FSK调制方式下的afcbandwidth
+#define PARAMETER_PACKET_TYPE							(u32)(1 << 3)//LoRaWAN MAC模式工作时，发送数据包的类型
+#define PARAMETER_ADR_SWITCH							(u32)(1 << 5)//LoRaWAN MAC模式工作时，ADR使能或去使能
+#define PARAMETER_PHY_FREQUENCY			      (u32)(1 << 6)//phy MAC模式工作时，工作频点
+#define PARAMETER_PHY_SPREADING_FACTOR		(u32)(1 << 7)//phy MAC模式工作时，LORA调制方式下的扩频因子，有效值为7-12
+#define PARAMETER_PHY_MODULATION_MODE			(u32)(1 << 8)//phy MAC模式工作时，调制方式的选择
+#define PARAMETER_FSK_FDEV								(u32)(1 << 9)//FSK调制方式下的频偏
+#define PARAMETER_FSK_DATARATE						(u32)(1 << 10)//FSK调制方式下的速率
+#define PARAMETER_FSK_BANDEIDTH						(u32)(1 << 11)//FSK调制方式下的带宽
+#define PARAMETER_FSK_AFC_BANDWIDTH				(u32)(1 << 12)//FSK调制方式下的afcbandwidth
 
 //define length of parameters
 //定义参数长度
@@ -113,14 +119,14 @@ history: V1.0 Robxr create file and add maintainer functions
 /*!
  * LoRaMac datarates definition
  */
-#define DR_0                                        0  // SF12 - BW125
-#define DR_1                                        1  // SF11 - BW125
-#define DR_2                                        2  // SF10 - BW125
-#define DR_3                                        3  // SF9  - BW125
-#define DR_4                                        4  // SF8  - BW125
-#define DR_5                                        5  // SF7  - BW125
-#define DR_6                                        6  // SF7  - BW250
-#define DR_7                                        7  // FSK
+#define DR_0                        0  // SF12 - BW125
+#define DR_1                        1  // SF11 - BW125
+#define DR_2                        2  // SF10 - BW125
+#define DR_3                        3  // SF9  - BW125
+#define DR_4                        4  // SF8  - BW125
+#define DR_5                        5  // SF7  - BW125
+#define DR_6                        6  // SF7  - BW250
+#define DR_7                        7  // FSK
 
 /* typedef -----------------------------------------------------------*/
 typedef struct
@@ -144,7 +150,6 @@ typedef union
     }PACKED Fields;
 }PACKED DrRange_t;
 
-
 typedef struct
 {
     uint32_t Frequency; // Hz
@@ -159,6 +164,7 @@ typedef struct LoRaMacMacPara
 	Band_t bands[LORA_MAX_NB_BANDS];//LORA MAC的频点定义
 	ChannelParams_t channels[LORA_MAX_NB_CHANNELS];//LORA MAC的信道定义
 	u8 datarate;//LORA MAC的发送速率
+	u8 packet_type;//发送数据包类型
 	bool lora_mac_adr_switch ;//LORA MAC的ADR使能与否
 	u32 phyFrequency;//phy MAC的频点定义
 	u8  phySF;//phy MAC的LORA调制方式时的扩频因子 

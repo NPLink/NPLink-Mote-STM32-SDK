@@ -31,7 +31,7 @@ typedef struct loraMAC_msg
 	int8_t msgRxSnr;//接收信噪比
   int8_t tx_packet_status;//发送数据包状态
   uint8  reserve;//保留字节
-	uint8 msgData[64];//消息数据payload,最大70字节
+	uint8 msgData[64];//消息数据payload,最大64字节
 }loraMAC_msg_t;
 
 
@@ -42,6 +42,7 @@ extern uint32_t MoteIDAddr;
 extern u8 	LoraMAC_taskID;
 
 extern bool g_lora_mac_adr_switch ;
+extern u8 packet_type;
 extern u8	mode ;
 
 /* function prototypes -----------------------------------------------*/

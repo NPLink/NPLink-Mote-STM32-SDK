@@ -33,6 +33,7 @@ Maintainer: Robxr
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private define ------------------------------------------------------------*/
+#define APP_TX_DUTYCYCLE                            5000
 
 /* Private macro -------------------------------------------------------------*/
 
@@ -107,9 +108,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -150,9 +153,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -193,9 +198,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -236,9 +243,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -279,9 +288,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -322,9 +333,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -365,9 +378,11 @@ void APP_Init(u8 task_id)
 	g_macData.channels[7].Band = 0;
 	//发送速率
 	g_macData.datarate = DR_5;
+	//设置发送包类型
+	g_macData.packet_type = UNCONFIRMED_UP;
 	//ADR开启或关闭
 	g_macData.lora_mac_adr_switch = TRUE;
-	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE);
+	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE);
 	//设置使用LoRaMAC
 	LoRaMac_setMode(MODE_LORAMAC);
 	
@@ -390,13 +405,15 @@ void APP_Init(u8 task_id)
 		g_macData.channels[2].Band = 0;
 		//发送速率
 		g_macData.datarate = DR_7;
+		//设置发送包类型
+		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = FALSE;
 		//设置FSK参数
-		g_macData.fskDatarate= 200000;//200000;//FSK调制下的发送速率
-		g_macData.fskFdev = 100000;//100000;//FSK调制下的频偏
-		g_macData.fskBandwidth = 200000;//200000;//FSK调制下的接收带宽
-		g_macData.fskAfcBandwidth = 249999;//249999;//FSK调制下的AFC带宽
+		g_macData.fskDatarate= 50000;//FSK调制下的发送速率
+		g_macData.fskFdev = 25000;//FSK调制下的频偏
+		g_macData.fskBandwidth = 50000;//FSK调制下的接收带宽
+		g_macData.fskAfcBandwidth = 83333;//FSK调制下的AFC带宽
 		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH \
 																	| PARAMETER_DATARATE | PARAMETER_FSK_FDEV | PARAMETER_FSK_DATARATE \
 																	| PARAMETER_FSK_BANDEIDTH | PARAMETER_FSK_AFC_BANDWIDTH );
@@ -440,7 +457,6 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
  loraMAC_msg_t* pMsgSend = NULL;
  loraMAC_msg_t* pMsgRecieve = NULL;
 	
- u8 len = 0 ;
  static u16 txErrorNum = 0;
  static u16 txTimeoutNum = 0;
  u8 txErrorString[20];
@@ -459,7 +475,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		case TXDONE :
 				#if 1//连续发包模式
 					display_sx1276_tx_pac_parm( pMsgRecieve->frame_no );
-					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);	
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,APP_TX_DUTYCYCLE);	
 				#else//低功耗测试
 					
 					#ifdef USE_LOW_POWER_MODE
@@ -482,7 +498,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 					OLED_Clear_Line(5,12);
 					OLED_ShowString( 0,48, (u8*)txErrorString,12 );
 					OLED_Refresh_Gram();
-					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,APP_TX_DUTYCYCLE);
 					break;
 
 				
@@ -493,7 +509,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 					OLED_Clear_Line(5,12);
 					OLED_ShowString( 0,48, (u8*)txErrorString,12 );
 					OLED_Refresh_Gram();
-					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);
+					osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,APP_TX_DUTYCYCLE);
 					break;
 
 			//rx done
@@ -503,11 +519,8 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 				display_sx1276_rx_pac_parm( pMsgRecieve->msgRxRssi,pMsgRecieve->msgRxSnr);//第3行显示接收参数
 				OLED_Clear_Half();//先把屏幕下一半清空
 				APP_ShowMoteID(g_appData.devAddr);
-				len = 0 ;
 				memset(Rx_buf , 0 ,sizeof(Rx_buf));                               
 				osal_memcpy(Rx_buf,pMsgRecieve->msgData,pMsgRecieve->msgLen);
-				len = pMsgRecieve->msgLen;
-				Rx_buf[len] = 0;
 				OLED_Clear_Line(4,12);//先清空数据，再显示
 				OLED_Clear_Line(5,12);
 				OLED_ShowString( 0,36, (u8*)Rx_buf,12 );//第4行显示数据内容
@@ -545,14 +558,9 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 			}
 				osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
 		}
-
-		#ifdef USE_DEBUG
-		HAL_UART_SendBytes("app send start...\n", osal_strlen("app send start...\n"));
-		#endif
 	  //osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,300);//延时继续发送
 		return (events ^ APP_PERIOD_SEND);
 	}	
-	
 	return 0 ;
 }
 
@@ -562,7 +570,7 @@ void APP_ShowMoteID( u32 moteID )
 	u8 	MoteIDString[32] ;
 	u8* pIDString = MoteIDString;
 	u32 ZeroNum = 0 ;
-
+	
 	//count the zero num in front of moteID string
 	for(u8 i = 28; i > 0; i = i - 4)
 	{
