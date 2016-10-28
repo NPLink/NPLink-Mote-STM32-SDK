@@ -680,7 +680,6 @@ Section Cross References
     rtc_board.o(i.RtcDelayMs) refers to rtc_board.o(i.RtcGetTimerValue) for RtcGetTimerValue
     rtc_board.o(i.RtcEnterLowPowerStopMode) refers to stm32l0xx_hal_msp.o(i.HAL_MspDeInit) for HAL_MspDeInit
     rtc_board.o(i.RtcEnterLowPowerStopMode) refers to stm32l0xx_hal_pwr.o(i.HAL_PWR_EnterSTOPMode) for HAL_PWR_EnterSTOPMode
-    rtc_board.o(i.RtcEnterLowPowerStopMode) refers to rtc_board.o(.data) for LowPowerDisableDuringTask
     rtc_board.o(i.RtcGetCalendarValue) refers to stm32l0xx_hal_rtc.o(i.HAL_RTC_GetTime) for HAL_RTC_GetTime
     rtc_board.o(i.RtcGetCalendarValue) refers to stm32l0xx_hal_rtc.o(i.HAL_RTC_GetDate) for HAL_RTC_GetDate
     rtc_board.o(i.RtcGetCalendarValue) refers to stm32l0xx_hal_rtc.o(i.HAL_RTC_WaitForSynchro) for HAL_RTC_WaitForSynchro
@@ -2225,7 +2224,7 @@ Removing Unused input sections from the image.
     Removing rtc_board.o(i.RTC_AlarmConfig), (196 bytes).
     Removing rtc_board.o(i.RtcClearStatus), (48 bytes).
     Removing rtc_board.o(i.RtcDelayMs), (50 bytes).
-    Removing rtc_board.o(i.RtcEnterLowPowerStopMode), (44 bytes).
+    Removing rtc_board.o(i.RtcEnterLowPowerStopMode), (20 bytes).
     Removing rtc_board.o(i.RtcGetCalendarValue), (340 bytes).
     Removing rtc_board.o(i.RtcGetMinimumTimeout), (28 bytes).
     Removing rtc_board.o(i.RtcGetTimerElapsedTime), (80 bytes).
@@ -2375,7 +2374,7 @@ Removing Unused input sections from the image.
     Removing dfltul.o(.text), (28 bytes).
     Removing dfixul.o(.text), (64 bytes).
 
-596 unused section(s) (total 43372 bytes) removed from the image.
+596 unused section(s) (total 43348 bytes) removed from the image.
 
 ==============================================================================
 
@@ -3428,7 +3427,7 @@ Image Symbol Table
     SX1276WriteBuffer                        0x08007f6d   Thumb Code    68  sx1276.o(i.SX1276WriteBuffer)
     SX1276WriteFifo                          0x08007fb1   Thumb Code    18  sx1276.o(i.SX1276WriteFifo)
     SysTick_Handler                          0x08007fc5   Thumb Code    18  stm32l0xx_it.o(i.SysTick_Handler)
-    SystemClockConfig_STOP                   0x08007fdd   Thumb Code   102  rtc_board.o(i.SystemClockConfig_STOP)
+    SystemClockConfig_STOP                   0x08007fdd   Thumb Code   104  rtc_board.o(i.SystemClockConfig_STOP)
     SystemClock_Config                       0x0800804d   Thumb Code   106  stm32l0xx_hal_msp.o(i.SystemClock_Config)
     SystemInit                               0x080080c1   Thumb Code    88  system_stm32l0xx.o(i.SystemInit)
     TIM2_IRQHandler                          0x08008129   Thumb Code    44  stm32l0xx_it.o(i.TIM2_IRQHandler)
@@ -4066,51 +4065,51 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       876        106          0         14        208       4351   app_osal.o
-       520         60          0         12          0       4097   at.o
-        16          0          0          0          0        840   board.o
-        12          0          0          0          0        438   delay.o
-       226          0          0          0          0       3072   fifo.o
-       196         24          0          0         64       1866   gpio_board.o
-        90          6          0          1          0       1274   hal_osal.o
-        52         18          0          0         76       1151   iwdg_board.o
-       192         34          0          2          0       5023   key_board.o
-       840         70          0          2         28       4458   led_board.o
-        12          0          0          0          0        383   main.o
-      1470         58       6080          0       1024       6881   oled_board.o
-       982         60          0          4          0      10924   osal.o
-        56          6         17         12          0       3014   osal_app.o
-       600         70          0         24       1024       3677   osal_memory.o
-        32          6          0          4          0        926   osal_mutex.o
-         0          0          0          2          0        488   osal_tick.o
-       498         26          0          8          0       8954   osal_time.o
-       150         10          0          0          0       2309   rtc_board.o
-       332         32          0          0         84       2969   spi_board.o
-        32         10        192          0       1024        660   startup_stm32l051xx.o
-       136         14          0          4          0       3447   stm32l0xx_hal.o
-       218         26          0          0          0       9861   stm32l0xx_hal_cortex.o
-       504         30          0          0          0       2624   stm32l0xx_hal_gpio.o
-       474         28          0          0          0       3011   stm32l0xx_hal_iwdg.o
-       200         16          0          0        144       2381   stm32l0xx_hal_msp.o
-      2868        108         28         25          0       6775   stm32l0xx_hal_rcc.o
-       132         12          0          0          0       1458   stm32l0xx_hal_rtc.o
-         2          0          0          0          0       1360   stm32l0xx_hal_rtc_ex.o
-      1888          0          0          0          0       6654   stm32l0xx_hal_spi.o
-       602          8          0          0          0       5638   stm32l0xx_hal_tim.o
-      1360         66          0          0          0       4834   stm32l0xx_hal_uart.o
-         2          0          0          0          0        924   stm32l0xx_hal_uart_ex.o
-       428         46          0          0          0       4324   stm32l0xx_it.o
-      7322        434        224         33        444      94142   sx1276.o
-       510         50         80          1          0       8838   sx1276_board.o
-       104         16          0         29          0     198029   system_stm32l0xx.o
-       806         30          0          8          0       6640   timer.o
-       372         52          0         28         56       4531   timer_board.o
-       562         52          0          2        600       4665   uart_board.o
-        72         10          0          1          0       1244   usart1_osal.o
-       130         24          0          4          0       2971   utilities.o
+       876        106          0         14        208       4451   app_osal.o
+       520         60          0         12          0       4209   at.o
+        16          0          0          0          0        876   board.o
+        12          0          0          0          0        454   delay.o
+       226          0          0          0          0       3172   fifo.o
+       196         24          0          0         64       1950   gpio_board.o
+        90          6          0          1          0       1326   hal_osal.o
+        52         18          0          0         76       1203   iwdg_board.o
+       192         34          0          2          0       5143   key_board.o
+       840         70          0          2         28       4582   led_board.o
+        12          0          0          0          0        399   main.o
+      1470         58       6080          0       1024       7077   oled_board.o
+       982         60          0          4          0      11228   osal.o
+        56          6         17         12          0       3082   osal_app.o
+       600         70          0         24       1024       3777   osal_memory.o
+        32          6          0          4          0        978   osal_mutex.o
+         0          0          0          2          0        524   osal_tick.o
+       498         26          0          8          0       9190   osal_time.o
+       150          8          0          0          0       2365   rtc_board.o
+       332         32          0          0         84       3093   spi_board.o
+        32         10        192          0       1024        676   startup_stm32l051xx.o
+       136         14          0          4          0       3559   stm32l0xx_hal.o
+       218         26          0          0          0       9953   stm32l0xx_hal_cortex.o
+       504         30          0          0          0       2680   stm32l0xx_hal_gpio.o
+       474         28          0          0          0       3099   stm32l0xx_hal_iwdg.o
+       200         16          0          0        144       2465   stm32l0xx_hal_msp.o
+      2868        108         28         25          0       6923   stm32l0xx_hal_rcc.o
+       132         12          0          0          0       1490   stm32l0xx_hal_rtc.o
+         2          0          0          0          0       1396   stm32l0xx_hal_rtc_ex.o
+      1888          0          0          0          0       6806   stm32l0xx_hal_spi.o
+       602          8          0          0          0       5814   stm32l0xx_hal_tim.o
+      1360         66          0          0          0       4954   stm32l0xx_hal_uart.o
+         2          0          0          0          0        960   stm32l0xx_hal_uart_ex.o
+       428         46          0          0          0       4496   stm32l0xx_it.o
+      7322        434        224         33        444      95014   sx1276.o
+       510         50         80          1          0       9054   sx1276_board.o
+       104         16          0         29          0     198273   system_stm32l0xx.o
+       806         30          0          8          0       6856   timer.o
+       372         52          0         28         56       4703   timer_board.o
+       562         52          0          2        600       4801   uart_board.o
+        72         10          0          1          0       1296   usart1_osal.o
+       130         24          0          4          0       3091   utilities.o
 
     ----------------------------------------------------------------------
-     25920       1618       6653        232       4776     442106   Object Totals
+     25920       1616       6653        232       4776     447438   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         44          0          0         12          0          0   (incl. Padding)
 
@@ -4118,13 +4117,13 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Member Name
 
-      1498         22        768          0          0      13392   aes.o
-       760          4          0          4          0       3684   cmac.o
-      8396       1176         14        264        600      26633   loramac.o
-       896        130          0         55         20     113838   loramac_osal.o
-       696         46          0         32        556       6271   loramaccrypto.o
-       716         92          0          0          0       3415   loramacusr.o
-       716        170          0         27         40       5415   phymac.o
+      1498         22        768          0          0      13492   aes.o
+       760          4          0          4          0       3736   cmac.o
+      8396       1176         14        264        600      26941   loramac.o
+       896        130          0         55         20     113986   loramac_osal.o
+       696         46          0         32        556       6359   loramaccrypto.o
+       716         92          0          0          0       3455   loramacusr.o
+       716        170          0         27         40       5499   phymac.o
        200         20          0          0          0         76   ceil.o
        200         20          0          0          0         76   floor.o
        156         14          0          0          0         84   round.o
@@ -4174,20 +4173,20 @@ Image component sizes
        124         10          0          0          0         76   drnd.o
 
     ----------------------------------------------------------------------
-     17580       1830        915        388       1220     175604   Library Totals
+     17580       1830        915        388       1220     176424   Library Totals
         10          0          0          2          4          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Name
 
-     13678       1640        782        382       1216     172648   NPLink-Mote-Mac.lib
+     13678       1640        782        382       1216     173468   NPLink-Mote-Mac.lib
        556         54          0          0          0        236   m_ps.l
       1892         76        133          4          0       1704   mc_p.l
       1444         60          0          0          0       1016   mf_p.l
 
     ----------------------------------------------------------------------
-     17580       1830        915        388       1220     175604   Library Totals
+     17580       1830        915        388       1220     176424   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -4196,9 +4195,9 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     43500       3448       7568        620       5996     604014   Grand Totals
-     43500       3448       7568        164       5996     604014   ELF Image Totals (compressed)
-     43500       3448       7568        164          0          0   ROM Totals
+     43500       3446       7568        620       5996     610166   Grand Totals
+     43500       3446       7568        164       5996     610166   ELF Image Totals (compressed)
+     43500       3446       7568        164          0          0   ROM Totals
 
 ==============================================================================
 

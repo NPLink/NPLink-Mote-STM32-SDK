@@ -427,7 +427,7 @@ static void RtcStartWakeUpAlarm( uint32_t timeoutValue )
 
 void RtcEnterLowPowerStopMode( void )
 {
-  if( ( LowPowerDisableDuringTask == false ) && ( RtcTimerEventAllowsLowPower == true ) )
+  //if( ( LowPowerDisableDuringTask == false ) && ( RtcTimerEventAllowsLowPower == true ) )
   {
       // Disable IRQ while the MCU is being deinitialized to prevent race issues
       __disable_irq( );
@@ -440,30 +440,6 @@ void RtcEnterLowPowerStopMode( void )
       /* Enter Stop Mode */
       HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
   }
-
-  #if 0
-    if( ( LowPowerDisableDuringTask == false ) && ( RtcTimerEventAllowsLowPower == true ) )
-    {
-        // Disable IRQ while the MCU is being deinitialized to prevent race issues
-        __disable_irq( );
-
-        BoardDeInitMcu( );
-
-        __enable_irq( );
-
-        /* Disable the Power Voltage Detector */
-        PWR_PVDCmd( DISABLE );
-
-        /* Set MCU in ULP (Ultra Low Power) */
-        PWR_UltraLowPowerCmd( ENABLE );
-
-        /*Disable fast wakeUp*/
-        PWR_FastWakeUpCmd( DISABLE );
-
-        /* Enter Stop Mode */
-        //PWR_EnterSTOPMode( PWR_Regulator_LowPower, PWR_STOPEntry_WFI );
-    }
-    #endif
 }
 
 void RtcRecoverMcuStatus( void )
@@ -473,63 +449,17 @@ void RtcRecoverMcuStatus( void )
       //if( ( LowPowerDisableDuringTask == false ) && ( RtcTimerEventAllowsLowPower == true ) )
       {
           // Disable IRQ while the MCU is not running on HSE
-          __disable_irq( );
+				__disable_irq( );
 
-          SystemClockConfig_STOP();
-          //ÐèÒª»Ö¸´ÄÄÐ©??
-          //HalLedInit();
-          SPI1_Init();
-		  TimerHwInit();
-          SX1276IoInit();
-		  SX1276Q1CtrlInit();
-          //SX1276Init(RadioEvents_t * events) ????
-
-          __enable_irq( );
+				SystemClockConfig_STOP();
+				SPI1_Init();
+				TimerHwInit();
+				SX1276IoInit();
+				SX1276Q1CtrlInit();
+				
+				__enable_irq( );
       }
   }
-
-	#if 0
-    if( TimerGetLowPowerEnable( ) == true )
-    {
-        if( ( LowPowerDisableDuringTask == false ) && ( RtcTimerEventAllowsLowPower == true ) )
-        {
-            // Disable IRQ while the MCU is not running on HSE
-            __disable_irq( );
-
-            /* After wake-up from STOP reconfigure the system clock */
-            /* Enable HSE */
-            RCC_HSEConfig( RCC_HSE_ON );
-
-            /* Wait till HSE is ready */
-            while( RCC_GetFlagStatus( RCC_FLAG_HSERDY ) == RESET )
-            {}
-
-            /* Enable PLL */
-            RCC_PLLCmd( ENABLE );
-
-            /* Wait till PLL is ready */
-            while( RCC_GetFlagStatus( RCC_FLAG_PLLRDY ) == RESET )
-            {}
-
-            /* Select PLL as system clock source */
-      //      RCC_SYSCLKConfig( RCC_SYSCLKSource_PLLCLK );
-
-            /* Wait till PLL is used as system clock source */
-            while( RCC_GetSYSCLKSource( ) != 0x0C )
-            {}
-
-            /* Set MCU in ULP (Ultra Low Power) */
-            PWR_UltraLowPowerCmd( DISABLE ); // add up to 3ms wakeup time
-
-            /* Enable the Power Voltage Detector */
-            PWR_PVDCmd( ENABLE );
-
-            BoardInitMcu( );
-
-            __enable_irq( );
-        }
-    }
-		#endif
 }
 
 void BlockLowPowerDuringTask( bool status )
@@ -645,19 +575,16 @@ void SystemClockConfig_STOP(void)
   /* Get the Oscillators configuration according to the internal RCC registers */
   HAL_RCC_GetOscConfig(&RCC_OscInitStruct);
 
-  /* After wake-up from STOP reconfigure the system clock: Enable HSI and PLL */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSEState = RCC_HSE_OFF;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  /* Enable HSI Oscillator and activate PLL with HSI as source */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSIState = RCC_HSI_OFF;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_4;
-  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_8;
+  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_3;
   RCC_OscInitStruct.HSICalibrationValue = 0x10;
-  if(HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-
-  }
+  HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
   /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
      clocks dividers */
@@ -668,8 +595,6 @@ void SystemClockConfig_STOP(void)
 
   }
 }
-
-
 
 /**
   * @brief  Configure the current time and date.
