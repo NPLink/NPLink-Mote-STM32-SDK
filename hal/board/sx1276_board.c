@@ -35,14 +35,15 @@ const struct Radio_s Radio =
     SX1276GetTimeOnAir,
     SX1276Send,
     SX1276SetSleep,
-    SX1276SetStby,
+    SX1276SetStby, 
     SX1276SetRx,
     SX1276StartCad,
     SX1276ReadRssi,
     SX1276Write,
     SX1276Read,
     SX1276WriteBuffer,
-    SX1276ReadBuffer
+    SX1276ReadBuffer,
+    SX1276SetMaxPayloadLength
 };
 
 /*!
@@ -96,8 +97,7 @@ void SX1276IoIrqInit( DioIrqHandler **irqHandlers )
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	/* Enable and set EXTI4_15 Interrupt to the lowest priority */
-	//HAL_NVIC_SetPriority(EXTI4_15_IRQn, 3, 0);
-	//HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+
 	HAL_NVIC_SetPriority(EXTI0_1_IRQn, 1, 0);
 	HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
 
@@ -125,8 +125,6 @@ void SX1276IoDeInit( void )
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);//PB11¿ØÖÆsxÐ¾Æ¬µÄresetÒý½Å
-	//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_11,GPIO_PIN_RESET);
-
 	
 	GPIO_InitStruct.Pin = GPIO_PIN_2;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
@@ -136,7 +134,7 @@ void SX1276IoDeInit( void )
 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_2,GPIO_PIN_RESET);
 	
 	__GPIOB_CLK_DISABLE();  
-	__GPIOA_CLK_DISABLE();   //20160317
+	__GPIOA_CLK_DISABLE();  
 }
 
 uint8_t SX1276GetPaSelect( uint32_t channel )
@@ -170,6 +168,7 @@ void SX1276SetAntSwLowPower( bool status )
 
 void SX1276AntSwInit( void )
 {
+
 	//RADIO_ANT_SWITCH_HF -- PA1
 
    GPIO_InitTypeDef  GPIO_InitStruct;
@@ -181,7 +180,8 @@ void SX1276AntSwInit( void )
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET); //add by zjh
+  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET); 
+	
 }
 
 void SX1276AntSwDeInit( void )
@@ -189,22 +189,19 @@ void SX1276AntSwDeInit( void )
 	//RADIO_ANT_SWITCH_HF -- PA1
 
   GPIO_InitTypeDef  GPIO_InitStruct;
-	
-  //__GPIOA_CLK_DISABLE();
 
   GPIO_InitStruct.Pin = (GPIO_PIN_1);
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET); //add by zjh
+  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET); 
 	
-
 }
 
 void SX1276SetAntSw( uint8_t rxTx )
 {
-	if( work_frequence == 0 )
+	if( g_sx1276_tx_pac_param.freq < 525000000 )
 	{
 		if( rxTx != 0 ) 
 	  {
@@ -226,6 +223,7 @@ void SX1276SetAntSw( uint8_t rxTx )
 	    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET);
 	  }
 	}
+
 }
 
 //sx1279 board use active crystal, and PA2 control it's power supply
@@ -247,9 +245,7 @@ void SX1276Q1CtrlInit( void )
 
 void SX1276Q1CtrlDeInit( void )
 {
-   GPIO_InitTypeDef  GPIO_InitStruct;
-
-  //__GPIOA_CLK_DISABLE();
+  GPIO_InitTypeDef  GPIO_InitStruct;
 
   GPIO_InitStruct.Pin = (GPIO_PIN_2);
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
@@ -269,7 +265,6 @@ void SX1276SetQ1( uint8_t onOff )
     HAL_GPIO_WritePin(GPIOA,GPIO_PIN_2,GPIO_PIN_RESET);
   }
 }
-
 
 bool SX1276CheckRfFrequency( uint32_t frequency )
 {

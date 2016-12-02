@@ -35,13 +35,12 @@ typedef uint64_t TimerTime_t;
   #define RTC_SYNCH_PREDIV   0x00FF
 #endif
 
-
 /*!
  * \brief Initializes the RTC timer
  *
  * \remark The timer is based on the RTC
  */
-void RtcInit( void );
+void RTCInit( void );
 
 /*!
  * \brief Stop the RTC Timer
@@ -101,5 +100,9 @@ void RtcRecoverMcuStatus( void );
  * \param [IN] delay Delay value in ms
  */
 void RtcDelayMs ( uint32_t delay );
+
+TimerTime_t RtcGetElapsedAlarmTime( void );
+TimerTime_t RtcComputeElapsedTime( TimerTime_t eventInTime );
+TimerTime_t RtcComputeFutureEventTime( TimerTime_t futureEventInTime );
 
 #endif // __RTC_BOARD_H__

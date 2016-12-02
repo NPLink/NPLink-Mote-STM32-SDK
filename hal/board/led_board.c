@@ -101,6 +101,7 @@ extern u8 osal_set_event( u8 task_id, u16 event_flag );
     /* -1- Enable GPIOB Clock (to be able to program the configuration registers) */
     __GPIOA_CLK_ENABLE();
     __GPIOC_CLK_ENABLE();
+		__GPIOB_CLK_ENABLE();
     /* -2- Configure PA.0 IO in output push-pull mode to
     drive external LEDs */
     GPIO_InitStruct.Pin = (GPIO_PIN_0);
@@ -109,9 +110,9 @@ extern u8 osal_set_event( u8 task_id, u16 event_flag );
     GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-
     GPIO_InitStruct.Pin = (GPIO_PIN_13);
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
  }
 
 
@@ -144,7 +145,6 @@ extern u8 osal_set_event( u8 task_id, u16 event_flag );
 
      case HAL_LED_MODE_FLASH:
         /* Default flash, N times, D% duty cycle */
-        //HalLedBlink (leds, HAL_LED_DEFAULT_FLASH_COUNT, HAL_LED_DEFAULT_DUTY_CYCLE, HAL_LED_DEFAULT_FLASH_TIME);
         if( HAL_LED_1 == led )
         {
 

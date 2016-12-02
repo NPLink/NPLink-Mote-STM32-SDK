@@ -111,6 +111,10 @@ bool SX1276CheckRfFrequency( uint32_t frequency );
 void SX1276Q1CtrlInit( void );
 
 /*!
+ * \brief SX1276Q1 Control DeInit
+ */
+void SX1276Q1CtrlDeInit( void );
+/*!
  * Radio hardware and global parameters
  */
 extern SX1276_t SX1276;

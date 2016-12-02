@@ -57,9 +57,6 @@ typedef unsigned char   uint8;
 
 typedef unsigned char   bool;
 
-typedef uint8           halDataAlign_t;
-
-
 /* ------------------------------------------------------------------------------------------------
  *                               Memory Attributes and Compiler Macros
  * ------------------------------------------------------------------------------------------------

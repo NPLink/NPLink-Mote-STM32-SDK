@@ -29,7 +29,7 @@
 
 // Message Pool Definitions
 osal_msg_q_t osal_qHead;
-
+u8 system_reset = 0;
 /*********************************************************************
  * EXTERNAL VARIABLES
  */
@@ -250,7 +250,9 @@ u32 osal_build_u32( u8 *swapped, u8 len )
  */
 u16 osal_rand( void )
 {
-  return Onboard_rand();
+  //return Onboard_rand();
+	return 0;
+
 }
 
 /*********************************************************************
@@ -861,7 +863,12 @@ while(1)
     osalTimeUpdate();
 		
 		#ifndef USE_DEBUG
-			HAL_IWDG_Refresh(&IwdgHandle);
+		
+		  if( system_reset == 0 )
+		  {
+				HAL_IWDG_Refresh(&IwdgHandle);
+		  }
+			
 		#endif
 		
     do {

@@ -8,7 +8,7 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 Maintainer: Robxr
 */
 /**************************************************
- * @fn		UART_Init
+ * @fn		HAL_UART_Init
  *
  * @brief 	initialize Uart
  *
@@ -41,7 +41,7 @@ Maintainer: Robxr
 #define USARTx_IRQn                      USART1_IRQn
 #define USARTx_IRQHandler                USART1_IRQHandler
 
-#define RECEIVE_BUFF_LEN			(512)
+#define RECEIVE_BUFF_LEN			(128)
 extern struct bFIFO usart1_receive_fifo;
 extern uint8_t usart1_receive_buffer[RECEIVE_BUFF_LEN];
 
@@ -57,15 +57,14 @@ extern uint8_t usart1_receive_buffer[RECEIVE_BUFF_LEN];
 
 /* Exported functions ------------------------------------------------------- */
 
+void UART_Init(void);
+void HAL_UART_ReceiveString(void);
 void HAL_UART_MspInit(UART_HandleTypeDef *huart);
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart);
-void UART_Init(void);
-
 void HAL_UART_SendBytes(uint8_t * str,uint16_t count);
+void HAL_UART_BandRateChange(uint32_t bandrate);
 uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag);
-
 uint32_t HAL_UART_ReceiveLength(void);
 int32_t HAL_UART_ReceiveChar(uint8_t *c, uint32_t timeout);
-void HAL_UART_ReceiveString(void);
 
 #endif //__UART_BOARD_H__

@@ -10,7 +10,7 @@ Maintainer: Robxr
 
 #ifndef __UTILITIES_H__
 #define __UTILITIES_H__
-
+#include "stdint.h" 
 /*!
  * \brief Returns the minimum value betwen a and b
  *
@@ -69,8 +69,7 @@ int32_t randr( int32_t min, int32_t max );
  * \param [IN]  src  Source array
  * \param [IN]  size Number of bytes to be copied
  */
-void memcpy1( uint8_t *dst, uint8_t *src, uint16_t size );
-
+void memcpy1( uint8_t *dst, const uint8_t *src, uint16_t size );
 /*!
  * \brief Set size elements of dst array with value
  *
@@ -90,5 +89,9 @@ void memset1( uint8_t *dst, uint8_t value, uint16_t size );
  * \retval hexChar Converted hexadecimal character
  */
 int8_t Nibble2HexChar( uint8_t a );
+
+void memset1( uint8_t *dst, uint8_t value, uint16_t size );
+void memcpyr( uint8_t *dst, const uint8_t *src, uint16_t size );
+void srand1( uint32_t seed );
 
 #endif // __UTILITIES_H__

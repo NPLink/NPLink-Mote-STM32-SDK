@@ -21,7 +21,7 @@ Maintainer: Miguel Luis and Gregory Cristian
 /*!
  * Radio wakeup time from SLEEP mode
  */
-#define RADIO_WAKEUP_TIME                           1000 // [us]
+#define RADIO_WAKEUP_TIME                           1 // [us]
 
 /*!
  * Radio FSK modem parameters

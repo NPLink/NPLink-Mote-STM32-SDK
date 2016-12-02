@@ -50,13 +50,6 @@
 #include "led_board.h"
 #include "hal_osal.h"
 #include "LoraMac_osal.h"
-/** @addtogroup STM32L0xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup TIM_TimeBase
-  * @{
-  */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -65,8 +58,6 @@
 extern RTC_HandleTypeDef RTCHandle;
 extern UART_HandleTypeDef UartHandle;
 
-u8 step;
-u8 stepflag = 1;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -144,21 +135,6 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32l0xx.s).                                               */
 /******************************************************************************/
-
-/*!
- * Timer2 IRQ handler,Timer2 is used for MAC schedule
- */
-void TIM2_IRQHandler( void )
-{
-	HAL_TIM_IRQHandler(&TimHandle);
-
-  TimerIncrementTickCounter( );
-
-	if( TimerTickCounter == TimeoutCntValue )
-	{
-	  osal_set_event(HardWare_taskID, HAL_EVENT_TIMER);
-	}
-}
 
 /**
   * @brief  This function handles RTC Auto wake-up interrupt request. RTC is used for low power mode timer
@@ -243,7 +219,6 @@ void USART1_IRQHandler(void)
           huart->State = HAL_UART_STATE_READY;
           HAL_UARTEx_WakeupCallback(huart);
   }
-
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

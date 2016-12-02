@@ -167,13 +167,11 @@ void HalKeyPoll (void)
 {
 		if (HAL_PUSH_BUTTON1())//if(GPIO_Pin == GPIO_PIN_8)
 		{
-				//HalLedSet ( HAL_LED_2, HAL_LED_MODE_FLASH );
 				OLED_Clear();	//按一次按键清屏
 				APP_ShowMoteID( g_appData.devAddr);
 		}
 		else
 		{
-				//HalLedSet ( HAL_LED_2, HAL_LED_MODE_ON );
 		}
 
 

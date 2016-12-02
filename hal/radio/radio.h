@@ -54,8 +54,7 @@ typedef struct
      *                     FSK : N/A ( set to 0 )
      *                     LoRa: SNR value in dB
      */
-    void    ( *RxDone )( uint8_t *payload, uint16_t size, int8_t rssi, int8_t snr );
-    //void    ( *RxDone )( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
+    void    ( *RxDone )( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
     /*!
      * \brief  Rx Timeout callback prototype.
      */
@@ -64,7 +63,7 @@ typedef struct
      * \brief Rx Error callback prototype.
      */
     void    ( *RxError )( void );
-	/*!
+    /*!
      * \brief  FHSS Change Channel callback prototype.
      *
      * \param [IN] currentChannel   Index number of the current channel
@@ -95,7 +94,7 @@ struct Radio_s
      *
      * \param status Radio status.[RF_IDLE, RF_RX_RUNNING, RF_TX_RUNNING]
      */
-    RadioState_t ( *Status )( void );
+    RadioState_t ( *GetStatus )( void );
     /*!
      * \brief Configures the radio with the given modem
      *
@@ -117,7 +116,7 @@ struct Radio_s
      *
      * \retval isFree         [true: Channel is free, false: Channel is not free]
      */
-    bool    ( *IsChannelFree )( RadioModems_t modem, uint32_t freq, int8_t rssiThresh );
+    bool    ( *IsChannelFree )( RadioModems_t modem, uint32_t freq, int16_t rssiThresh );
     /*!
      * \brief Generates a 32 bits random value based on the RSSI readings
      *
@@ -168,18 +167,13 @@ struct Radio_s
      * \param [IN] rxContinuous Sets the reception in continuous mode
      *                          [false: single mode, true: continuous mode]
      */
-/*    void    ( *SetRxConfig )( RadioModems_t modem, uint32_t bandwidth,
+    void    ( *SetRxConfig )( RadioModems_t modem, uint32_t bandwidth,
                               uint32_t datarate, uint8_t coderate,
                               uint32_t bandwidthAfc, uint16_t preambleLen,
                               uint16_t symbTimeout, bool fixLen,
-                              bool crcOn, bool iqInverted, bool rxContinuous );*/
-	  void    ( *SetRxConfig )( RadioModems_t modem, uint32_t bandwidth,   //add by xlh
-							  uint32_t datarate, uint8_t coderate,
-							  uint32_t bandwidthAfc, uint16_t preambleLen,
-							  uint16_t symbTimeout, bool fixLen,
-							  uint8_t payloadLen,
-							  bool crcOn, bool FreqHopOn, uint8_t HopPeriod,
-							  bool iqInverted, bool rxContinuous );
+                              uint8_t payloadLen,
+                              bool crcOn, bool FreqHopOn, uint8_t HopPeriod,
+                              bool iqInverted, bool rxContinuous );
     /*!
      * \brief Sets the transmission parameters
      *
@@ -213,19 +207,13 @@ struct Radio_s
      * \param [IN] iqInverted   Inverts IQ signals (LoRa only)
      *                          FSK : N/A ( set to 0 )
      *                          LoRa: [0: not inverted, 1: inverted]
-     * \param [IN] timeout      Transmission timeout [us]
+     * \param [IN] timeout      Transmission timeout [ms]
      */
-/*    void    ( *SetTxConfig )( RadioModems_t modem, int8_t power, uint32_t fdev, 
+    void    ( *SetTxConfig )( RadioModems_t modem, int8_t power, uint32_t fdev, 
                               uint32_t bandwidth, uint32_t datarate,
                               uint8_t coderate, uint16_t preambleLen,
-                              bool fixLen, bool crcOn,
-						  bool iqInverted, uint32_t timeout );*/
-	void    ( *SetTxConfig )( RadioModems_t modem, int8_t power, uint32_t fdev,   //add by xlh
-						  uint32_t bandwidth, uint32_t datarate,
-						  uint8_t coderate, uint16_t preambleLen,
-						  bool fixLen, bool crcOn, bool FreqHopOn,
-						  uint8_t HopPeriod, bool iqInverted, uint32_t timeout );						  
-							  
+                              bool fixLen, bool crcOn, bool FreqHopOn,
+                              uint8_t HopPeriod, bool iqInverted, uint32_t timeout );
     /*!
      * \brief Checks if the given RF frequency is supported by the hardware
      *
@@ -262,7 +250,7 @@ struct Radio_s
     void    ( *Standby )( void );
     /*!
      * \brief Sets the radio in reception mode for the given time
-     * \param [IN] timeout Reception timeout [us]
+     * \param [IN] timeout Reception timeout [ms]
      *                     [0: continuous, others timeout]
      */
     void    ( *Rx )( uint32_t timeout );
@@ -275,7 +263,7 @@ struct Radio_s
      *
      * \retval rssiValue Current RSSI value in [dBm]
      */
-    int8_t ( *Rssi )( RadioModems_t modem );
+    int16_t ( *Rssi )( RadioModems_t modem );
     /*!
      * \brief Writes the radio register at the specified address
      *
@@ -306,6 +294,14 @@ struct Radio_s
      * \param [IN] size Number of registers to be read
      */
     void    ( *ReadBuffer )( uint8_t addr, uint8_t *buffer, uint8_t size );
+    /*!
+     * \brief Sets the maximum payload length.
+     *
+     * \param [IN] modem      Radio modem to be used [0: FSK, 1: LoRa]
+     * \param [IN] max        Maximum payload length in bytes
+     */
+    void ( *SetMaxPayloadLength )( RadioModems_t modem, uint8_t max );
+
 };
 
 /*!

@@ -334,8 +334,8 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 size,u8 mode)
     for(t=0;t<csize;t++)
     {   
 			if(size==12)temp=asc2_1206[chr][t]; 	 	  // Font 1206
-			else if(size==16)temp=asc2_1608[chr][t];	// Font 1206
-			else if(size==24)temp=asc2_2412[chr][t];	// Font 1206
+			//else if(size==16)temp=asc2_1608[chr][t];	// Font 1206
+			//else if(size==24)temp=asc2_2412[chr][t];	// Font 1206
 			else return;								              //Not word stock
       for(t1=0;t1<8;t1++)
 			{

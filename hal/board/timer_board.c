@@ -55,7 +55,7 @@ void TimerHwInit( void )
 			 + Counter direction = Up
 	*/
 	//100us ¶¨Ê±
-	TimHandle.Init.Period = 3199;//10000 - 1; //
+	TimHandle.Init.Period = 3199;//249999;//3199;//10000 - 1; //
 	TimHandle.Init.Prescaler = 0;//uwPrescalerValue;
 	TimHandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;//0;
 	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -120,7 +120,7 @@ void TimerHwDelayMs( uint32_t delay )
     }
 }
 
-uint64_t TimerHwGetElapsedTime( void )
+TimerTime_t TimerHwGetElapsedTime( void )
 {
      return( ( ( TimerHwGetTimerValue( ) - TimerTickCounterContext ) + 1 )  * HW_TIMER_TIME_BASE );
 }
@@ -131,9 +131,9 @@ TimerTime_t TimerHwGetTime( void )
     return TimerHwGetTimerValue( ) * HW_TIMER_TIME_BASE;
 }
 
-uint64_t TimerHwGetTimerValue( void )
+TimerTime_t TimerHwGetTimerValue( void )
 {
-    uint64_t val = 0;
+    TimerTime_t val = 0;
 
     __disable_irq( );
 
@@ -155,7 +155,5 @@ void TimerIncrementTickCounter( void )
 
 void TimerHwEnterLowPowerStopMode( void )
 {
-//#ifndef USE_DEBUGGER
-//    __WFI( );
-//#endif
+
 }

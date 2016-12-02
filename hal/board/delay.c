@@ -13,5 +13,12 @@ Maintainer: Robxr
 
 void DelayMs( uint32_t ms )
 {
-  TimerHwDelayMs( ms );
+	 for( int i = 0; i < ms; i++ )
+	{
+		int base_time = 4200;
+		while( base_time -- )
+		{
+			__nop();
+		}
+	}
 }

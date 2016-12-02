@@ -8,15 +8,12 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 Maintainer: Robxr
 */
 #include "board.h"
-#include "timer_board.h"
+#include "osal.h"
+#include "rtc_board.h"
+#include "Uart_board.h"
+#include "LoraMac_osal.h"
 
-//static bool LowPowerModeEnable = true;
-
-/*!
- * This flag is used to make sure we have looped through the main several time to avoid race issues
- */
-volatile uint8_t HasLoopedThroughMain = 0;
-
+ uint32_t g_elapsedTime = 0;
 /*!
  * Timers list head pointer
  */
@@ -112,8 +109,22 @@ void TimerStart( TimerEvent_t *obj )
         }
 
         if( obj->Timestamp < remainingTime )
-        {
-            TimerInsertNewHeadTimer( obj, remainingTime );
+        {					
+						uint8_t seconds = 0;
+						uint8_t minutes = 0;
+						uint8_t hours = 0;
+					
+						if( seconds == 60 )
+						{
+							if( minutes == 60 )
+							{
+								if( hours == 24 )
+								{
+									
+								}
+							}
+						}
+						TimerInsertNewHeadTimer( obj, remainingTime );
         }
         else
         {
@@ -269,7 +280,7 @@ void TimerStop( TimerEvent_t *obj )
 
     if( TimerListHead == obj ) // Stop the Head
     {
-        if( TimerListHead->IsRunning == true ) // The head is already running
+        if( TimerListHead->IsRunning == true ) 
         {
             elapsedTime = TimerGetValue( );
             if( elapsedTime > obj->Timestamp )
@@ -360,33 +371,32 @@ void TimerReset( TimerEvent_t *obj )
 
 void TimerSetValue( TimerEvent_t *obj, uint32_t value )
 {
-    uint32_t minValue = 0;
-
-    TimerStop( obj );
-
-    minValue = TimerHwGetMinimumTimeout( );
-
-    if( value < minValue )
-    {
-        value = minValue;
-    }
-
-    obj->Timestamp = value;
-    obj->ReloadValue = value;
+	TimerStop( obj );
+	obj->Timestamp = value ;
+	obj->ReloadValue = value ;	
 }
 
 uint32_t TimerGetValue( void )
 {
-  return TimerHwGetElapsedTime( );
+	return RtcGetElapsedAlarmTime( );
 }
 
 TimerTime_t TimerGetCurrentTime( void )
 {
-  return TimerHwGetTime( );
+	return RtcGetTimerValue( );
+}
+
+TimerTime_t TimerGetElapsedTime( TimerTime_t savedTime )
+{
+    return RtcComputeElapsedTime( savedTime );
+}
+
+TimerTime_t TimerGetFutureTime( TimerTime_t eventInFuture )
+{
+    return RtcComputeFutureEventTime( eventInFuture );
 }
 
 static void TimerSetTimeout( TimerEvent_t *obj )
 {
-  TimerHwStart( obj->Timestamp );
+	RtcSetTimeout( obj->Timestamp );
 }
-

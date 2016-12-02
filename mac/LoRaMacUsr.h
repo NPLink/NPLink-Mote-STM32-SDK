@@ -7,20 +7,6 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 
 Maintainer: Robxr
 
-history: V1.0 Robxr create file and add maintainer functions
-         		V1.1 zhangjh Modify functions parameters type, include 4 functions as flow:
-              LoRaMac_setAppLayerParameter
-				LoRaMac_getAppLayerParameter
-				LoRaMac_setMacLayerParameter
-				LoRaMac_getMacLayerParameter
-			V1.2 :
-			  1) XLH/Robxr Add mac mode set function and low power mode set function:
-				LoRaMac_setMode
-				LoRaMac_setlowPowerMode
-			  2) add three MAC Layer parameters:
-			   PARAMETER_PHY_FREQUENCY
-			   PARAMETER_PHY_SPREADING_FACTOR
-			   PARAMETER_PHY_MODULATION_MODE
 */
 
 #ifndef __LORAMACUSR_H__
@@ -45,29 +31,24 @@ history: V1.0 Robxr create file and add maintainer functions
 /*Macros--------------------------------------------------------------------*/
 //define work mode of mote (LoRaMac or PhyMac)
 //定义MAC的工作模式，可以是LoRaMac(带协议)或phyMac(不带协议)
-#define MODE_LORAMAC									0 
-#define MODE_PHY											1
+#define MODE_LORAMAC											0 
+#define MODE_PHY													1
 
 //define modulation mode of mote (LoRa or FSK)
 //定义物理层芯片的调制方式，可以是LoRa调制或FSK调制
-#define MODULATION_FSK								0 
-#define MODULATION_LORA								1
-
-//define working frequency of mote (HF or LF)
-//定义射频芯片的工作频率,可以是高频或低频
-#define LOW_FREQUENCE									0 
-#define HIGH_FREQUENCE								1			
+#define MODULATION_FSK										0 
+#define MODULATION_LORA										1		
 
 //define working frequency of mote (confirmer or unconfirmer)
-//定义发送数据包的类型,可以是确认包或非确认包
-#define UNCONFIRMED_UP								2 
-#define CONFIRMED_UP								  4	
+//定义上行包的类型，可以使确认包或非确认包
+#define UNCONFIRMED_UP								    0 
+#define CONFIRMED_UP								      1	
 
 //define return status
 //定义MAC层处理状态
-#define LORAMAC_USR_SUCCESS							0//成功
-#define LORAMAC_USR_INVALID_PARAMETER		1//无效参数
-#define LORAMAC_USR_FAILURE							0xFF//失败
+#define LORAMAC_USR_SUCCESS								0//成功
+#define LORAMAC_USR_INVALID_PARAMETER			1//无效参数
+#define LORAMAC_USR_FAILURE								0xFF//失败
 
 //define parameter IDs of LoRaMac application layer
 //定义应用层参数ID号
@@ -78,13 +59,15 @@ history: V1.0 Robxr create file and add maintainer functions
 #define PARAMETER_NWK_SKEY								(u32)(1 << 4)//LoRaWAN NwkSkey，当activation by personalization时使用
 #define PARAMETER_APP_SKEY								(u32)(1 << 5)//LoRaWAN AppSkey，当activation by personalization时使用
 #define PARAMETER_DEV_TXPOWER 				    (u32)(1 << 6)//数据发送功率
+#define PARAMETER_DEV_NETWORKJOINED 			(u32)(1 << 7)//设备加入网络
 
 //define parameter IDs of LoRaMac mac layer
-//定义MAC层参数ID号confirmed_retries
+//定义MAC层参数ID号
 #define PARAMETER_BANDS 									(u32)(1 << 0)//LoRaWAN MAC模式工作时使用的频点，当前支持1个频点
 #define PARAMETER_CHANNELS								(u32)(1 << 1)//LoRaWAN MAC模式工作时，在频点上使用的信道，当前支持最多16个信道
 #define PARAMETER_DATARATE								(u32)(1 << 2)//LoRaWAN MAC模式工作时，发送速率
-#define PARAMETER_PACKET_TYPE							(u32)(1 << 3)//LoRaWAN MAC模式工作时，发送数据包的类型
+#define PARAMETER_PACKET_TYPE							(u32)(1 << 3)//LoRaWAN MAC模式工作时，发送数上行包类型
+#define PARAMETER_CLASS_MODE							(u32)(1 << 4)//LoRaWAN MAC模式工作时，选择的class类型
 #define PARAMETER_ADR_SWITCH							(u32)(1 << 5)//LoRaWAN MAC模式工作时，ADR使能或去使能
 #define PARAMETER_PHY_FREQUENCY			      (u32)(1 << 6)//phy MAC模式工作时，工作频点
 #define PARAMETER_PHY_SPREADING_FACTOR		(u32)(1 << 7)//phy MAC模式工作时，LORA调制方式下的扩频因子，有效值为7-12
@@ -96,37 +79,48 @@ history: V1.0 Robxr create file and add maintainer functions
 
 //define length of parameters
 //定义参数长度
-#define APP_EUI_LEN									8
-#define MOTE_DEV_ADDR_LEN						4
-#define APP_KEY_LEN									16
-#define NWK_SKEY_LEN								16
-#define APP_SKEY_LEN								16
+#define APP_EUI_LEN												8
+#define DEV_EUI_LEN												8
+#define MOTE_DEV_ADDR_LEN									4
+#define APP_KEY_LEN												16
+#define NWK_SKEY_LEN											16
+#define APP_SKEY_LEN											16
 
-#define LORA_MAX_NB_BANDS 					1//only one band is supported currentlly.
-#define LORA_MAX_NB_CHANNELS 				16//only 16 channels are supported currentlly.
+#if defined( USE_BAND_868 )
+	#define LORA_MAX_NB_BANDS 								5//five band is supported currentlly.
+#else
+	#define LORA_MAX_NB_BANDS 								1//only one band is supported currentlly.
+#endif
 
+#if defined( USE_BAND_915 )
+	#define LORA_MAX_NB_CHANNELS 							72// channels are supported currentlly.
+#else
+	#define LORA_MAX_NB_CHANNELS 							16//only 16 channels are supported currentlly.
+#endif
 //define TxPower 
 //定义发送功率
-#define TX_POWER_MAX_INDEX					5
-
-#define TX_POWER_20_DBM             0
-#define TX_POWER_14_DBM             1
-#define TX_POWER_11_DBM             2
-#define TX_POWER_08_DBM            	3
-#define TX_POWER_05_DBM             4
-#define TX_POWER_02_DBM             5
+#define TX_POWER_MAX_INDEX							 8
+#define TX_POWER_20_DBM            			 0
+#define TX_POWER_17_DBM             		 1
+#define TX_POWER_16_DBM             		 2
+#define TX_POWER_14_DBM             		 3
+#define TX_POWER_12_DBM             		 4
+#define TX_POWER_10_DBM             		 5
+#define TX_POWER_07_DBM             		 6
+#define TX_POWER_05_DBM             		 7
+#define TX_POWER_02_DBM             		 8
 
 /*!
  * LoRaMac datarates definition
  */
-#define DR_0                        0  // SF12 - BW125
-#define DR_1                        1  // SF11 - BW125
-#define DR_2                        2  // SF10 - BW125
-#define DR_3                        3  // SF9  - BW125
-#define DR_4                        4  // SF8  - BW125
-#define DR_5                        5  // SF7  - BW125
-#define DR_6                        6  // SF7  - BW250
-#define DR_7                        7  // FSK
+#define DR_0                             0  // SF12 - BW125
+#define DR_1                             1  // SF11 - BW125
+#define DR_2                             2  // SF10 - BW125
+#define DR_3                             3  // SF9  - BW125
+#define DR_4                             4  // SF8  - BW125
+#define DR_5                             5  // SF7  - BW125
+#define DR_6                             6  // SF7  - BW250
+#define DR_7                             7  // FSK
 
 /* typedef -----------------------------------------------------------*/
 typedef struct
@@ -135,7 +129,17 @@ typedef struct
     int8_t TxMaxPower;
     uint64_t LastTxDoneTime;
     uint64_t TimeOff;
-} PACKED Band_t;
+}  Band_t;
+
+/*!
+ * LoRaWAN devices classes definition
+ */
+typedef enum eDeviceClass
+{
+	CLASS_A, //LoRaWAN device class A
+	CLASS_B, //LoRaWAN device class B
+	CLASS_C, //LoRaWAN device class C
+}DeviceClass_t;
 
 /*!
  * LoRaMAC channels parameters definition
@@ -145,10 +149,10 @@ typedef union
     int8_t Value;
     struct
     {
-        int8_t Min : 4;
-        int8_t Max : 4;
-    }PACKED Fields;
-}PACKED DrRange_t;
+			int8_t Min : 4;
+			int8_t Max : 4;
+    } Fields;
+} DrRange_t;
 
 typedef struct
 {
@@ -156,7 +160,7 @@ typedef struct
     DrRange_t DrRange;  // Max datarate [0: SF12, 1: SF11, 2: SF10, 3: SF9, 4: SF8, 5: SF7, 6: SF7, 7: FSK]
                         // Min datarate [0: SF12, 1: SF11, 2: SF10, 3: SF9, 4: SF8, 5: SF7, 6: SF7, 7: FSK]
     uint8_t Band;       // Band index
-}PACKED ChannelParams_t;
+} ChannelParams_t;
 
 /* typedef -----------------------------------------------------------*/
 typedef struct LoRaMacMacPara
@@ -164,7 +168,8 @@ typedef struct LoRaMacMacPara
 	Band_t bands[LORA_MAX_NB_BANDS];//LORA MAC的频点定义
 	ChannelParams_t channels[LORA_MAX_NB_CHANNELS];//LORA MAC的信道定义
 	u8 datarate;//LORA MAC的发送速率
-	u8 packet_type;//发送数据包类型
+	u8 packet_type;//上行包类型
+	DeviceClass_t class_mode;//LORAWAN 协议的class类型
 	bool lora_mac_adr_switch ;//LORA MAC的ADR使能与否
 	u32 phyFrequency;//phy MAC的频点定义
 	u8  phySF;//phy MAC的LORA调制方式时的扩频因子 
@@ -177,12 +182,14 @@ typedef struct LoRaMacMacPara
 
 typedef struct LoRaMacAppPara
 {
-	u32 devAddr;//设备地址
-	u8  txPower;//发送功率
-	u8  appEUI[APP_EUI_LEN];//LoRaWAN AppEUI值
-	u8 	appKey[APP_KEY_LEN];//LoRaWAN AppKey
-	u8 	nwkSKey[NWK_SKEY_LEN];//LoRaWAN NwkSkey
-	u8 	appSKey[APP_SKEY_LEN];//LoRaWAN AppSkey
+	u32  devAddr;//设备地址
+	u8   txPower;//发送功率
+	bool isnetworkjoined ;//设备是否入网
+	u8   appEUI[APP_EUI_LEN];//LoRaWAN AppEUI值
+	u8   devEUI[DEV_EUI_LEN];//LoRaWAN DEVEUI值
+	u8 	 appKey[APP_KEY_LEN];//LoRaWAN AppKey
+	u8 	 nwkSKey[NWK_SKEY_LEN];//LoRaWAN NwkSkey
+	u8   appSKey[APP_SKEY_LEN];//LoRaWAN AppSkey
 }LoRaMacAppPara_t;
 
 /* function prototypes -----------------------------------------------*/

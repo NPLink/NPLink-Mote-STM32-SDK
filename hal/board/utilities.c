@@ -19,16 +19,16 @@ Maintainer: Robxr
  * different compiler toolchains implementations.
  */
 // Standard random functions redefinition start
-#define RAND_LOCAL_MAX 2147483647
+#define RAND_LOCAL_MAX 2147483647L
 
-static unsigned long next = 1;
+static uint32_t next = 1;
 
-int rand( void )
+int32_t rand1( void )
 {
-    return ( ( next = next * 1103515245 + 12345 ) % RAND_LOCAL_MAX );
+    return ( ( next = next * 1103515245L + 12345L ) % RAND_LOCAL_MAX );
 }
 
-void srand( unsigned int seed )
+void srand1( uint32_t seed )
 {
     next = seed;
 }
@@ -36,15 +36,7 @@ void srand( unsigned int seed )
 
 int32_t randr( int32_t min, int32_t max )
 {
-    return ( int32_t )rand( ) % ( max - min + 1 ) + min;
-}
-
-void memcpy1( uint8_t *dst, uint8_t *src, uint16_t size )
-{
-    while( size-- )
-    {
-        *dst++ = *src++;
-    }
+    return ( int32_t )rand1( ) % ( max - min + 1 ) + min;
 }
 
 void memset1( uint8_t *dst, uint8_t value, uint16_t size )
@@ -52,6 +44,23 @@ void memset1( uint8_t *dst, uint8_t value, uint16_t size )
     while( size-- )
     {
         *dst++ = value;
+    }
+}
+
+void memcpy1( uint8_t *dst, const uint8_t *src, uint16_t size )
+{
+    while( size-- )
+    {
+        *dst++ = *src++;
+    }
+}
+
+void memcpyr( uint8_t *dst, const uint8_t *src, uint16_t size )
+{
+    dst = dst + ( size - 1 );
+    while( size-- )
+    {
+        *dst-- = *src++;
     }
 }
 
@@ -80,5 +89,5 @@ int fputc( int c, FILE *stream )
 #endif
 {
    //return( ITM_SendChar( c ) );
-	return 0 ; //add by zjh 
+	return 0 ; 
 }

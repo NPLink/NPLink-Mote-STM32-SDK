@@ -133,6 +133,8 @@ typedef u16 (*pTaskEventHandlerFn)( u8 task_id, u16 event );
 extern const pTaskEventHandlerFn tasksArr[];
 extern const u8 tasksCnt;
 extern u16 *tasksEvents;
+extern u8 system_reset;
+
 /*********************************************************************
 * FUNCTIONS
 */

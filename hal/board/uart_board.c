@@ -29,7 +29,6 @@ uint8_t recv_buf[RECV_MAX_LEN];
 
 void UART_Init(void)
 {
-  //char *test_str = "\nUART_Init Done!\n";
 	UartHandle.Instance        = USARTx;
 	UartHandle.Init.BaudRate   = 115200;
 	UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
@@ -38,10 +37,8 @@ void UART_Init(void)
 	UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
 	UartHandle.Init.Mode       = UART_MODE_TX_RX;
 
-	if(HAL_UART_Init(&UartHandle) != HAL_OK)
-	{
+	HAL_UART_Init(&UartHandle);
 
-	}
 		/* Enable the UART Parity Error Interrupt */
 	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_PE);
 
@@ -53,9 +50,6 @@ void UART_Init(void)
 	
 	USART1_ReceiveFifo_Init( );
 	
-	#ifdef USE_DEBUG
-	HAL_UART_SendBytes( (uint8_t *)test_str , strlen(test_str) );
-	#endif
 }
 
 
@@ -144,7 +138,6 @@ void HAL_UART_SendBytes(uint8_t * str,uint16_t count)
 	}	
 }
 
-
 uint8_t HAL_USART_GET_FLAG(USART_TypeDef * usartx,uint32_t flag)
 {
 	if((usartx->ISR & flag) == flag)
@@ -160,18 +153,6 @@ uint32_t HAL_UART_ReceiveLength(void)
 
 int32_t HAL_UART_ReceiveChar(uint8_t *c, uint32_t timeout)
 {
-   /* uint32_t ThisTime = HAL_GetTick();
-
-    do{
-		if(USART1_ReceiveFifo_Length())
-		{
-			USART1_ReceiveFifo_GetByte(c);
-            return ERR_SUCCESS;
-		}
-    }while(!IsTimeOut(ThisTime, timeout));
-    
-	return ERR_TIME_OUT;*/
-
 		if(USART1_ReceiveFifo_Length())
 		{
 			USART1_ReceiveFifo_GetByte(c);
@@ -206,14 +187,14 @@ void HAL_UART_ReceiveString()
 			if((recv_buf[count] == 0x0A) && (recv_buf[count - 1] == 0x0D))
 			{
 				head_frame_date = 0;
-				loraMAC_msg_t* pMsg = (loraMAC_msg_t*)osal_msg_allocate(8 + count );
+				loraMAC_msg_t* pMsg = (loraMAC_msg_t*)osal_msg_allocate(9 + count + 1 );
 				if(NULL != pMsg)
 				{
-					osal_memset(pMsg,0,8 + count + 1 );
+					osal_memset(pMsg,0,9 + count + 1 );
 					pMsg->msgID = TXREQUEST;
 					pMsg->msgLen = count + 1;
 					osal_memcpy(pMsg->msgData,recv_buf,count + 1);
-					osal_msg_send(LoraMAC_taskID,(u8*)pMsg);//发消息给MAC层，将串口数据通过无线发送出去
+					osal_msg_send(LoraMAC_taskID,(u8*)pMsg);
 				}
 				 osal_memset(recv_buf,0,RECV_MAX_LEN);
 				 count = 0;
@@ -241,4 +222,16 @@ void HAL_UART_ReceiveString()
 	}
 }
 
+void HAL_UART_BandRateChange( uint32_t bandrate )
+{
+	UartHandle.Instance        = USARTx;
+	UartHandle.Init.BaudRate   = bandrate;
+	UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
+	UartHandle.Init.StopBits   = UART_STOPBITS_1;
+	UartHandle.Init.Parity     = UART_PARITY_NONE;
+	UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+	UartHandle.Init.Mode       = UART_MODE_TX_RX;
+
+	HAL_UART_Init(&UartHandle);
+}
 

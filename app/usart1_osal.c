@@ -27,7 +27,7 @@
 #include "error.h"
 #include "osal.h"
 #include "delay.h"
-#include "at.h"
+#include "at.h" 
 #include "usart1_osal.h"
 #include "LoraMac_osal.h"
 
@@ -42,8 +42,8 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private macro -------------------------------------------------------------*/
-#define USART1_DATA_ID 0x0001
-#define RECV_USART1_PACKET 0x0002
+#define USART1_DATA_ID       0x0001
+#define RECV_USART1_PACKET   0x0002
 /* Private variables ---------------------------------------------------------*/
 
 u8 USART1_taskID; //串口1数据监控任务ID
@@ -82,7 +82,6 @@ u16 Usart1_ProcessEvent( u8 task_id, u16 events )
 
 		return (events ^ RECV_USART1_PACKET);
 	}
-
 	return 0 ; 
 }
 

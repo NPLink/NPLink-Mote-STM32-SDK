@@ -39,12 +39,16 @@ typedef struct InsParam{
 }InsParam_t;
 
 typedef struct lmote_config_at {
-	uint8_t		tx_rx; 		
-	int32_t 	freq_hz;		/*!> center frequ of the IF chain, relative to RF chain frequency */
+	uint32_t  banud ;
+	uint8_t		tx_rx; 	
+	uint8_t		phy_sf;
+	uint8_t		phy_modulation;
+	int32_t 	phy_freq;		/*!> center frequ of the IF chain, relative to RF chain frequency */
 
 }lmote_config_at_t ;
 
 extern u8 g_at_set_tx;
+extern u8 g_at_set_diffrq;
 extern lmote_config_at_t g_config_at_t;
 
 void at_command( uint8_t * at_cmd , int32_t at_cmd_len );

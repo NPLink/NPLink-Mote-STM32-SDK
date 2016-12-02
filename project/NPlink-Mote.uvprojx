@@ -373,7 +373,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER, USE_BAND_780</Define>
               <Undefine></Undefine>
-              <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board;..\hal\radio\sx1276</IncludePath>
+              <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board;..\hal\radio\sx1276;..\hal\drivers\STM32L0xx_HAL_Driver\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -432,6 +432,61 @@
               <FilePath>..\hal\drivers\cmsis\system_stm32l0xx.c</FilePath>
             </File>
             <File>
+              <FileName>stm32l0xx_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_cortex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_dac.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_iwdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_pwr_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_pwr_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32l0xx_hal_rcc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rcc_ex.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32l0xx_hal_rtc_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rtc_ex.c</FilePath>
@@ -467,69 +522,14 @@
               <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_usart.c</FilePath>
             </File>
             <File>
-              <FileName>stm32l0xx_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_adc.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32l0xx_hal_adc_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_adc_ex.c</FilePath>
             </File>
             <File>
-              <FileName>stm32l0xx_hal_cortex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_cortex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_dac.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_pwr.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_pwr_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_pwr_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_rcc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rcc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_rcc_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rcc_ex.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32l0xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32l0xx_hal_iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_iwdg.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -547,6 +547,11 @@
           <GroupName>hal/board</GroupName>
           <Files>
             <File>
+              <FileName>at.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\at.c</FilePath>
+            </File>
+            <File>
               <FileName>board.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\hal\board\board.c</FilePath>
@@ -557,9 +562,19 @@
               <FilePath>..\hal\board\delay.c</FilePath>
             </File>
             <File>
+              <FileName>fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\fifo.c</FilePath>
+            </File>
+            <File>
               <FileName>gpio_board.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\hal\board\gpio_board.c</FilePath>
+            </File>
+            <File>
+              <FileName>iwdg_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\iwdg_board.c</FilePath>
             </File>
             <File>
               <FileName>key_board.c</FileName>
@@ -597,11 +612,6 @@
               <FilePath>..\hal\board\timer.c</FilePath>
             </File>
             <File>
-              <FileName>timer_board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\board\timer_board.c</FilePath>
-            </File>
-            <File>
               <FileName>uart_board.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\hal\board\uart_board.c</FilePath>
@@ -611,40 +621,20 @@
               <FileType>1</FileType>
               <FilePath>..\hal\board\utilities.c</FilePath>
             </File>
-            <File>
-              <FileName>iwdg_board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\board\iwdg_board.c</FilePath>
-            </File>
-            <File>
-              <FileName>fifo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\board\fifo.c</FilePath>
-            </File>
-            <File>
-              <FileName>at.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\hal\board\at.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>osal</GroupName>
           <Files>
             <File>
-              <FileName>osal_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\osal\osal_app.c</FilePath>
-            </File>
-            <File>
-              <FileName>osal_time.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\osal\osal_time.c</FilePath>
-            </File>
-            <File>
               <FileName>osal.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\osal\osal.c</FilePath>
+            </File>
+            <File>
+              <FileName>osal_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\osal\osal_app.c</FilePath>
             </File>
             <File>
               <FileName>osal_memory.c</FileName>
@@ -661,11 +651,21 @@
               <FileType>1</FileType>
               <FilePath>..\osal\osal_tick.c</FilePath>
             </File>
+            <File>
+              <FileName>osal_time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\osal\osal_time.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>mac</GroupName>
           <Files>
+            <File>
+              <FileName>Comissioning.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\mac\Comissioning.h</FilePath>
+            </File>
             <File>
               <FileName>LoraMac_osal.h</FileName>
               <FileType>5</FileType>
@@ -677,9 +677,9 @@
               <FilePath>..\mac\LoRaMacUsr.h</FilePath>
             </File>
             <File>
-              <FileName>NPLink-Mote-Mac.lib</FileName>
+              <FileName>NPLink_Mote_Mac_780.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\mac\NPLink-Mote-Mac.lib</FilePath>
+              <FilePath>..\mac\NPLink_Mote_Mac_780.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -697,6 +697,11 @@
               <FilePath>..\app\hal_osal.c</FilePath>
             </File>
             <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\main.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32l0xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\app\stm32l0xx_hal_msp.c</FilePath>
@@ -705,11 +710,6 @@
               <FileName>stm32l0xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\app\stm32l0xx_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\app\main.c</FilePath>
             </File>
             <File>
               <FileName>usart1_osal.c</FileName>

@@ -47,15 +47,14 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
+#include "board.h"
 #include "led_board.h"
 #include "oled_board.h"
 #include "spi_board.h"
 #include "timer_board.h"
 #include "sx1276/sx1276.h"
 #include "sx1276_board.h"
-#include "board.h"
 #include "stm32l0xx_hal_rtc.h"
-#include "main.h"
 #include "rtc_board.h"
 #include "uart_board.h"
 #include "stm32l0xx_hal_uart.h"
@@ -66,7 +65,7 @@ void SystemClock_Config(void);
 void SystemPower_Config(void);
 void RTC_AlarmConfig(void);
 void UartSetConfig(void);
-
+void test_alarm(void);
 /** @addtogroup STM32L0xx_HAL_Driver
   * @{
   */
@@ -115,7 +114,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
 
   /* Enable the TIMx global Interrupt */
   HAL_NVIC_EnableIRQ(TIMx_IRQn);
-
 }
 
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim)
@@ -149,8 +147,13 @@ void HAL_MspInit(void)
 
 	//initiate 3-wire UART
   UART_Init();
+	
+	#ifndef  USE_DEBUG  
+	//initiate IWDG
+	IWDG_Configuration();
 	#endif
-
+	
+	#endif
 	//initiate SPI (for sx1276/1279)
 	SPI1_Init();
 
@@ -158,16 +161,8 @@ void HAL_MspInit(void)
 
 	//sx1279 active crystal initiate and power on
 	SX1276Q1CtrlInit();
-
-	#ifndef USE_DEBUG
-	IWDG_Configuration();
-	#endif
 	
-	#ifdef USE_LOW_POWER_MODE
-  RtcInit( );
-	#endif
-	
-  TimerHwInit( );
+	RTCInit( );
 }
 
 void HAL_MspSleepInit(void)
@@ -175,14 +170,9 @@ void HAL_MspSleepInit(void)
   /* NOTE : This function is generated automatically by STM32CubeMX and eventually
             modified by the user
    */
-
 	SystemClock_Config();
-
 	SPI1_Init();
-
 	SX1276IoInit( );
-
-	TimerHwInit( );
 }
 
 /**
@@ -196,8 +186,8 @@ void HAL_MspDeInit(void)
             modified by the user
    */
 	SPI1_DeInit();
-	TimerHwDeInit();
 	SX1276IoDeInit();
+	SX1276Q1CtrlDeInit();
 }
 
 void SystemClock_Config(void)
@@ -213,7 +203,7 @@ void SystemClock_Config(void)
      regarding system frequency refer to product datasheet.  */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  /* Enable HSI Oscillator and activate PLL with HSI as source */
+  /* Enable HSI Oscillator and activate PLL with HSE as source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_OFF;
@@ -291,18 +281,5 @@ void test_alarm(void)
     //Error_Handler();
   }
 }
-
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

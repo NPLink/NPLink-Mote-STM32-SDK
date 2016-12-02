@@ -75,12 +75,12 @@ TimerTime_t TimerHwGetTime( void );
 /*!
  * \brief Return the value on the timer counter
  */
-uint64_t TimerHwGetTimerValue( void );
+TimerTime_t TimerHwGetTimerValue( void );
 
 /*!
  * \brief Return the value on the timer Tick counter
  */
-uint64_t TimerHwGetElapsedTime( void );
+TimerTime_t TimerHwGetElapsedTime( void );
 
 /*!
  * \brief Set the ARM core in Wait For Interrupt mode (only working if Debug mode is not used)
@@ -88,10 +88,6 @@ uint64_t TimerHwGetElapsedTime( void );
 
 void TimerHwEnterLowPowerStopMode( void );
 
-/*!
- * \brief increment Tick counter
- */
-void TimerIncrementTickCounter( void );
-
+TimerTime_t TimerGetElapsedTime( TimerTime_t savedTime );
 
 #endif // __TIMER_BOARD_H__

@@ -28,6 +28,13 @@ Maintainer: Robxr
 #include "sx1276_board.h"
 
 /*!
+ * Unique Devices IDs register set ( STM32L0xxx )
+ */
+#define         ID1                                 ( 0x1FF80050 )
+#define         ID2                                 ( 0x1FF80054 )
+#define         ID3                                 ( 0x1FF80064 )
+
+/*!
  * Define indicating if an external IO expander is to be used
  */
 #define BOARD_IOE_EXT
@@ -49,15 +56,6 @@ Maintainer: Robxr
 #ifndef FAIL
 #define FAIL                                        0
 #endif
-
-
-
-/*!
- * Random seed generated using the MCU Unique ID
- */
-#define RAND_SEED                                   ( ( *( uint32_t* )ID1 ) ^ \
-                                                      ( *( uint32_t* )ID2 ) ^ \
-                                                      ( *( uint32_t* )ID3 ) )
 
 /*!
  * Board IO Extender pins definitions
@@ -186,5 +184,12 @@ void SpiInit( Spi_t *obj, PinNames mosi, PinNames miso, PinNames sclk, PinNames 
  * \param [IN] id Pointer to an array that will contain the Unique ID
  */
 void BoardGetUniqueId( uint8_t *id );
+
+/*!
+ * Returns a pseudo random seed generated using the MCU Unique ID
+ *
+ * \retval seed Generated pseudo random seed
+ */
+uint32_t BoardGetRandomSeed( void );
 
 #endif // __BOARD_H__
