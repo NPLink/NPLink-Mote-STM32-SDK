@@ -541,7 +541,7 @@ void APP_ParaConfig( void )
 		g_macData.channels[2].DrRange.Value = ( ( DR_7 << 4 ) | DR_7 );
 		g_macData.channels[2].Band = 0;
 		//发送速率
-		g_macData.datarate = DR_5;
+		g_macData.datarate = DR_7;
 		//设置上行包类型
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
@@ -571,7 +571,7 @@ void APP_ParaConfig( void )
 #if 0
 		//设置PHYMAC工作模式的参数(FSK调制方式)
 		g_macData.fskFdev = 25000;//FSK调制下的频偏
-		g_macData.fskDatarate= 50000;//FSK调制下的发送速率
+		g_macData.fskDatarate= 45000;//FSK调制下的发送速率
 		g_macData.fskBandwidth = 50000;//FSK调制下的带宽
 		g_macData.fskAfcBandwidth = 83333;//FSK调制下的AFC带宽
 		g_macData.phyFrequency = 779700000;//频率(Hz)

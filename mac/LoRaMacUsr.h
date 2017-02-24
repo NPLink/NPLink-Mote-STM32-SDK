@@ -20,14 +20,6 @@ Maintainer: Robxr
 #include <string.h>
 #include "utilities.h"
 
-#if defined(__CC_ARM) || defined(__GNUC__)
-#define PACKED                                      __attribute__( ( __packed__ ) )
-#elif defined( __ICCARM__ )
-#define PACKED                                      __packed
-#else
-    #warning Not supported compiler type
-#endif
-
 /*Macros--------------------------------------------------------------------*/
 //define work mode of mote (LoRaMac or PhyMac)
 //定义MAC的工作模式，可以是LoRaMac(带协议)或phyMac(不带协议)

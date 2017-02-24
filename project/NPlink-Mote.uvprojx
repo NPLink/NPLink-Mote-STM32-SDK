@@ -621,6 +621,11 @@
               <FileType>1</FileType>
               <FilePath>..\hal\board\utilities.c</FilePath>
             </File>
+            <File>
+              <FileName>timer_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\hal\board\timer_board.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -150,7 +150,7 @@ void HAL_MspInit(void)
 	
 	#ifndef  USE_DEBUG  
 	//initiate IWDG
-	IWDG_Configuration();
+	//IWDG_Configuration();
 	#endif
 	
 	#endif
@@ -162,7 +162,11 @@ void HAL_MspInit(void)
 	//sx1279 active crystal initiate and power on
 	SX1276Q1CtrlInit();
 	
-	RTCInit( );
+	#ifdef USE_LOW_POWER_MODE
+  //RtcInit( );
+	#endif
+	
+  TimerHwInit( );
 }
 
 void HAL_MspSleepInit(void)
@@ -173,6 +177,7 @@ void HAL_MspSleepInit(void)
 	SystemClock_Config();
 	SPI1_Init();
 	SX1276IoInit( );
+	TimerHwInit( );
 }
 
 /**
@@ -186,6 +191,7 @@ void HAL_MspDeInit(void)
             modified by the user
    */
 	SPI1_DeInit();
+	TimerHwDeInit();
 	SX1276IoDeInit();
 	SX1276Q1CtrlDeInit();
 }

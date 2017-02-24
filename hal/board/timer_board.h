@@ -89,5 +89,6 @@ TimerTime_t TimerHwGetElapsedTime( void );
 void TimerHwEnterLowPowerStopMode( void );
 
 TimerTime_t TimerGetElapsedTime( TimerTime_t savedTime );
+void TimerIncrementTickCounter( void );
 
 #endif // __TIMER_BOARD_H__

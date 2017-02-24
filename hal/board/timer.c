@@ -109,22 +109,8 @@ void TimerStart( TimerEvent_t *obj )
         }
 
         if( obj->Timestamp < remainingTime )
-        {					
-						uint8_t seconds = 0;
-						uint8_t minutes = 0;
-						uint8_t hours = 0;
-					
-						if( seconds == 60 )
-						{
-							if( minutes == 60 )
-							{
-								if( hours == 24 )
-								{
-									
-								}
-							}
-						}
-						TimerInsertNewHeadTimer( obj, remainingTime );
+        {
+            TimerInsertNewHeadTimer( obj, remainingTime );
         }
         else
         {
@@ -371,32 +357,32 @@ void TimerReset( TimerEvent_t *obj )
 
 void TimerSetValue( TimerEvent_t *obj, uint32_t value )
 {
-	TimerStop( obj );
-	obj->Timestamp = value ;
-	obj->ReloadValue = value ;	
+    uint32_t minValue = 0;
+
+    TimerStop( obj );
+    
+    minValue = TimerHwGetMinimumTimeout( );
+
+    if( value * 1000 < minValue )
+    {
+        value = minValue;
+    }
+
+    obj->Timestamp = value * 1000 ; //value µ¥Î»ÎªÎ¢Ãî
+    obj->ReloadValue = value * 1000;		
 }
 
 uint32_t TimerGetValue( void )
 {
-	return RtcGetElapsedAlarmTime( );
+  return TimerHwGetElapsedTime( );
 }
 
 TimerTime_t TimerGetCurrentTime( void )
 {
-	return RtcGetTimerValue( );
-}
-
-TimerTime_t TimerGetElapsedTime( TimerTime_t savedTime )
-{
-    return RtcComputeElapsedTime( savedTime );
-}
-
-TimerTime_t TimerGetFutureTime( TimerTime_t eventInFuture )
-{
-    return RtcComputeFutureEventTime( eventInFuture );
+  return TimerHwGetTime( );
 }
 
 static void TimerSetTimeout( TimerEvent_t *obj )
 {
-	RtcSetTimeout( obj->Timestamp );
+		TimerHwStart( obj->Timestamp );
 }

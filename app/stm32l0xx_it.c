@@ -136,6 +136,21 @@ void SysTick_Handler(void)
 /*  file (startup_stm32l0xx.s).                                               */
 /******************************************************************************/
 
+/*!
+ * Timer2 IRQ handler,Timer2 is used for MAC schedule
+ */
+void TIM2_IRQHandler( void )
+{
+	HAL_TIM_IRQHandler(&TimHandle);
+
+  TimerIncrementTickCounter( );
+
+	if( TimerTickCounter == TimeoutCntValue )
+	{
+	  TimerIrqHandler( );
+	}
+}
+
 /**
   * @brief  This function handles RTC Auto wake-up interrupt request. RTC is used for low power mode timer
   * @param  None

@@ -131,6 +131,14 @@ TimerTime_t TimerHwGetTime( void )
     return TimerHwGetTimerValue( ) * HW_TIMER_TIME_BASE;
 }
 
+
+TimerTime_t TimerGetElapsedTime( TimerTime_t savedTime )
+{
+	return( ( ( TimerHwGetTimerValue( ) - savedTime ) + 1 )  * HW_TIMER_TIME_BASE );
+}
+
+
+
 TimerTime_t TimerHwGetTimerValue( void )
 {
     TimerTime_t val = 0;

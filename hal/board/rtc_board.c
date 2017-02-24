@@ -287,13 +287,10 @@ static RtcCalendar_t RtcComputeTimerTimeToAlarmTick( TimerTime_t timeCounter, Rt
     timeoutValueTemp =  ( double )timeCounter * RTC_ALARM_TICK_PER_MS;
 
     // Compute timeoutValue error
-   //error = timeoutValue - timeoutValueTemp;   //实际值和四舍五入的误差值
 		error = abs(timeoutValue - timeoutValueTemp);  
 	
     // Add new error value to the cumulated value in uS
-		//TimeoutValueError += ( error  * 1000 );
-		TimeoutValueError += ( error * RTC_ALARM_TICK_DURATION  * 1000 );//add by NPLink
-    // Correct cumulated error if greater than ( RTC_ALARM_TICK_DURATION * 1000 )
+		TimeoutValueError += ( error * RTC_ALARM_TICK_DURATION  * 1000 );
     if( TimeoutValueError >= ( int32_t )( RTC_ALARM_TICK_DURATION * 1000 ) )
     {
         TimeoutValueError = TimeoutValueError - ( uint32_t )( RTC_ALARM_TICK_DURATION * 1000 );
