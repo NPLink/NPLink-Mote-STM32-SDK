@@ -150,7 +150,7 @@ void HAL_MspInit(void)
 	
 	#ifndef  USE_DEBUG  
 	//initiate IWDG
-	//IWDG_Configuration();
+	IWDG_Configuration();
 	#endif
 	
 	#endif
@@ -163,7 +163,7 @@ void HAL_MspInit(void)
 	SX1276Q1CtrlInit();
 	
 	#ifdef USE_LOW_POWER_MODE
-  //RtcInit( );
+  RTCInit( );
 	#endif
 	
   TimerHwInit( );

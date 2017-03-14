@@ -27,8 +27,8 @@ extern TimerEvent_t MacStateCheckTimer;
  * RTC Time base in us
  */
 
-#define RTC_ALARM_TICK_DURATION                    0.48828125     // 1 tick every 7.8125ms
-#define RTC_ALARM_TICK_PER_MS                      2.048          // 1/7.8125 = tick duration in ms
+#define RTC_ALARM_TICK_DURATION                    1000     			// 1 tick every 1000
+#define RTC_ALARM_TICK_PER_MS                      0.001          // 0.001 = tick duration in ms
 #define RTC_ALARM_MAX_TICK_NUM                     2419200000                             
 /*!
  * Maximum number of days that can be handled by the RTC alarm counter before overflow.
@@ -200,8 +200,8 @@ static void RtcSetConfig( void )
       - OutPutType     = Open Drain */      
   RTCHandle.Instance = RTC;
   RTCHandle.Init.HourFormat = RTC_HOURFORMAT_24;
-  RTCHandle.Init.AsynchPrediv = 0x03;
-  RTCHandle.Init.SynchPrediv = 0x03;
+  RTCHandle.Init.AsynchPrediv = RTC_ASYNCH_PREDIV;
+  RTCHandle.Init.SynchPrediv = RTC_SYNCH_PREDIV;
   RTCHandle.Init.OutPut = RTC_OUTPUT_DISABLE;
   RTCHandle.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
   RTCHandle.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
@@ -585,7 +585,7 @@ void RtcRecoverMcuStatus( void )
     __disable_irq( );
 
     SystemClockConfig_STOP();
-	
+
     SPI1_Init();
     SX1276IoInit();
 		SX1276Q1CtrlInit();
@@ -900,6 +900,5 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 		LowPowerMode = 0;	
 	}
 	RtcComputeWakeUpTime();
-	TimerIrqHandler( );
 }
 

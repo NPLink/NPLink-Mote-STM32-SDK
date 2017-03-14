@@ -257,7 +257,7 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 		RtcSetTimeout(10000);
 		APP_EnterlowPowerMode();
 		LoRaMac_setMode(MODE_LORAMAC);		
-		osal_set_event(APP_taskID,APP_LOWPOWER_MODE);
+		osal_start_timerEx(APP_taskID, APP_LOWPOWER_MODE,5000);//ÑÓÊ±¼ÌÐøÐÝÃß
 		
 		return (events ^ APP_LOWPOWER_MODE);
 	}
