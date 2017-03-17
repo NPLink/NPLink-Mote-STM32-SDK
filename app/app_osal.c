@@ -248,6 +248,8 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 				osal_msg_send(LoraMAC_taskID,(u8*)pMsgSend);
 		}
 	   //osal_start_timerEx(APP_taskID, APP_PERIOD_SEND,5000);//延时继续发送
+		 //osal_start_timerEx(APP_taskID, APP_LOWPOWER_MODE,5000);//延时继续进入低功耗
+		
 		return (events ^ APP_PERIOD_SEND);
 	}	
 
@@ -256,8 +258,9 @@ u16 APP_ProcessEvent( u8 task_id, u16 events )
 	{	
 		RtcSetTimeout(10000);
 		APP_EnterlowPowerMode();
-		LoRaMac_setMode(MODE_LORAMAC);		
-		osal_start_timerEx(APP_taskID, APP_LOWPOWER_MODE,5000);//延时继续休眠
+		LoRaMac_setMode(MODE_LORAMAC);	
+		
+		osal_set_event(APP_taskID,APP_PERIOD_SEND);//低功耗唤醒后继续发送
 		
 		return (events ^ APP_LOWPOWER_MODE);
 	}
@@ -309,7 +312,13 @@ void APP_ParaConfig( void )
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = TRUE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE );
+		
+	 //终端自身速率调节时ADR_ACK_LIMIT的个数
+		g_macData.adracklimit = 10;
+		//终端自身速率调节时ADR_ACK_DELAY的个数
+		g_macData.adrackdelay = 5;
+		
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE | PARAMETER_ADR_ACK_LIMIT | PARAMETER_ADR_ACK_DELAY );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 		
@@ -354,7 +363,13 @@ void APP_ParaConfig( void )
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = TRUE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE );
+		
+		//终端自身速率调节时ADR_ACK_LIMIT的个数
+		g_macData.adracklimit = 10;
+		//终端自身速率调节时ADR_ACK_DELAY的个数
+		g_macData.adrackdelay = 5;
+		
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE | PARAMETER_ADR_ACK_LIMIT | PARAMETER_ADR_ACK_DELAY );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 		
@@ -399,7 +414,13 @@ void APP_ParaConfig( void )
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = TRUE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE );
+		
+		//终端自身速率调节时ADR_ACK_LIMIT的个数
+		g_macData.adracklimit = 10;
+		//终端自身速率调节时ADR_ACK_DELAY的个数
+		g_macData.adrackdelay = 5;
+		
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE | PARAMETER_ADR_ACK_LIMIT | PARAMETER_ADR_ACK_DELAY );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 		
@@ -445,7 +466,12 @@ void APP_ParaConfig( void )
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = TRUE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE );
+		//终端自身速率调节时ADR_ACK_LIMIT的个数
+		g_macData.adracklimit = 5;
+		//终端自身速率调节时ADR_ACK_DELAY的个数
+		g_macData.adrackdelay = 2;
+		
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE | PARAMETER_ADR_ACK_LIMIT | PARAMETER_ADR_ACK_DELAY );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 		
@@ -490,7 +516,13 @@ void APP_ParaConfig( void )
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = TRUE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE );
+		
+		//终端自身速率调节时ADR_ACK_LIMIT的个数
+		g_macData.adracklimit = 10;
+		//终端自身速率调节时ADR_ACK_DELAY的个数
+		g_macData.adrackdelay = 5;
+		
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE | PARAMETER_ADR_ACK_LIMIT | PARAMETER_ADR_ACK_DELAY );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 		
@@ -518,7 +550,13 @@ void APP_ParaConfig( void )
 		g_macData.packet_type = UNCONFIRMED_UP;
 		//ADR开启或关闭
 		g_macData.lora_mac_adr_switch = TRUE;
-		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE );
+		
+		//终端自身速率调节时ADR_ACK_LIMIT的个数
+		g_macData.adracklimit = 10;
+		//终端自身速率调节时ADR_ACK_DELAY的个数
+		g_macData.adrackdelay = 5;
+		
+		LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CHANNELS | PARAMETER_ADR_SWITCH | PARAMETER_DATARATE | PARAMETER_PACKET_TYPE | PARAMETER_ADR_ACK_LIMIT | PARAMETER_ADR_ACK_DELAY );
 		//设置使用LoRaMAC
 		LoRaMac_setMode(MODE_LORAMAC);
 

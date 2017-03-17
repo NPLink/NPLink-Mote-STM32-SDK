@@ -586,6 +586,7 @@ void RtcRecoverMcuStatus( void )
 
     SystemClockConfig_STOP();
 
+		TimerHwInit();
     SPI1_Init();
     SX1276IoInit();
 		SX1276Q1CtrlInit();

@@ -68,6 +68,8 @@ Maintainer: Robxr
 #define PARAMETER_FSK_DATARATE						(u32)(1 << 10)//FSK调制方式下的速率
 #define PARAMETER_FSK_BANDEIDTH						(u32)(1 << 11)//FSK调制方式下的带宽
 #define PARAMETER_FSK_AFC_BANDWIDTH				(u32)(1 << 12)//FSK调制方式下的afcbandwidth
+#define PARAMETER_ADR_ACK_LIMIT 				  (u32)(1 << 13)//LoRaWAN MAC模式工作时，终端要实现自身速率调节所需的上行包个数
+#define PARAMETER_ADR_ACK_DELAY   				(u32)(1 << 14)//LoRaWAN MAC模式工作时，终端要实现自身速率调节所需发送的ADR_ACK包个数
 
 //define length of parameters
 //定义参数长度
@@ -166,6 +168,8 @@ typedef struct LoRaMacMacPara
 	u32 phyFrequency;//phy MAC的频点定义
 	u8  phySF;//phy MAC的LORA调制方式时的扩频因子 
 	u8  phyModulation;//phy MAC的调制方式定义
+	u8  adracklimit;
+	u8  adrackdelay;
 	u32 fskFdev;
 	u32 fskDatarate;
 	u32 fskBandwidth;

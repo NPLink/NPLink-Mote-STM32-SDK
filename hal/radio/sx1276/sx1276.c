@@ -1674,7 +1674,7 @@ void SX1276OnDio1Irq( void )
 								#ifdef USE_LOW_POWER_MODE
 								if( LoRaMAC_GetRxSolt() == 0)
 								{			
-									osal_set_event(LoraMAC_taskID,LORAMAC_LOWPOWER_MODE);
+									//osal_set_event(LoraMAC_taskID,LORAMAC_LOWPOWER_MODE);
 								}
 								#endif
                 break;
