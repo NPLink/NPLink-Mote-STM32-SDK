@@ -36,6 +36,11 @@ Maintainer: Robxr
 #define UNCONFIRMED_UP								    0 
 #define CONFIRMED_UP								      1	
 
+//define working frequency of mote (0x34 or 0x12)
+//定义LoRa调制下的同步字类型
+#define PRIVATE_SYNCWORD								  0x12
+#define PUBLIC_SYNCWORD							      0x34
+
 //define return status
 //定义MAC层处理状态
 #define LORAMAC_USR_SUCCESS								0//成功
@@ -70,6 +75,7 @@ Maintainer: Robxr
 #define PARAMETER_FSK_AFC_BANDWIDTH				(u32)(1 << 12)//FSK调制方式下的afcbandwidth
 #define PARAMETER_ADR_ACK_LIMIT 				  (u32)(1 << 13)//LoRaWAN MAC模式工作时，终端要实现自身速率调节所需的上行包个数
 #define PARAMETER_ADR_ACK_DELAY   				(u32)(1 << 14)//LoRaWAN MAC模式工作时，终端要实现自身速率调节所需发送的ADR_ACK包个数
+#define PARAMETER_SYNCWORD_TYPE         	(u32)(1 << 15)//LoRa调制方式下的同步字
 
 //define length of parameters
 //定义参数长度
@@ -174,6 +180,7 @@ typedef struct LoRaMacMacPara
 	u32 fskDatarate;
 	u32 fskBandwidth;
 	u32 fskAfcBandwidth;
+	u8  loraSyncword;
 }LoRaMacMacPara_t;
 
 typedef struct LoRaMacAppPara

@@ -1839,10 +1839,19 @@ void SX1276OnDio5Irq( void )
 
 void SX1276SetTcxoConfig(void)
 {
-  SX1276Write( REG_TCXO, 0x19 ); //设置外部有源晶振  
-  //SX1276Write(REG_PACONFIG,0xff);//接到P A 口
-}
+#if defined( USE_TCXO )
+	
+	SX1276Write( REG_TCXO, 0x19 ); //设置外部有源晶振  
+	
+#elif defined( USE_XTAL )
+	
+	SX1276Write( REG_TCXO, 0x09 ); //设置外部无源晶振
+	
+#else
+    #error "Please define a external crystal type in the compiler options."
+#endif
 
+}
 
 void display_sx1276_tx_pac_parm( u16 frame_no  )
 {

@@ -371,7 +371,7 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
-              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER, USE_BAND_780</Define>
+              <Define>STM32L051xx,USE_STM32L0538_DISCO,USE_HAL_DRIVER,USE_TCXO, USE_BAND_780</Define>
               <Undefine></Undefine>
               <IncludePath>..\hal\drivers\cmsis;..\hal\drivers\STM32L0xx_HAL_Driver\Inc;..\startup;..\hal\radio;..\hal\board;..\app;..\mac;..\osal;..\hal\board;..\hal\radio\sx1276;..\hal\drivers\STM32L0xx_HAL_Driver\Inc</IncludePath>
             </VariousControls>

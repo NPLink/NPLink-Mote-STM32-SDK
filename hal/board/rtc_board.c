@@ -158,11 +158,6 @@ static bool RtcTimerEventAllowsLowPower = false;
  */
 static bool LowPowerDisableDuringTask = false;
 
-/*!
- * \Flag of LowPowerMode
- */
-static bool LowPowerMode = false;
-
 TimerTime_t RtcGetAdjustedTimeoutValue( uint32_t timeout );
 
 void RTCInit( void )
@@ -569,7 +564,6 @@ void RtcEnterLowPowerStopMode( void )
       // Disable IRQ while the MCU is being deinitialized to prevent race issues
       __disable_irq( );
 
-			LowPowerMode = 1;
       HAL_MspDeInit();
 			
       __enable_irq( );
@@ -585,7 +579,6 @@ void RtcRecoverMcuStatus( void )
     __disable_irq( );
 
     SystemClockConfig_STOP();
-
 		TimerHwInit();
     SPI1_Init();
     SX1276IoInit();
@@ -895,11 +888,7 @@ void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
-	if( LowPowerMode == 1 )
-	{
-	  RtcRecoverMcuStatus();
-		LowPowerMode = 0;	
-	}
+	RtcRecoverMcuStatus();
 	RtcComputeWakeUpTime();
 }
 
