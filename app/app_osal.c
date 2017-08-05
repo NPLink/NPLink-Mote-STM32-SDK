@@ -65,14 +65,14 @@ void APP_EnterlowPowerMode( void );
 /* Private functions ---------------------------------------------------------*/
 void APP_Init(u8 task_id)
 {
-	u8 appeui[] = LORAWAN_DEVICE_EUI;
-	u8 deveui[] = LORAWAN_APPLICATION_EUI;
+	u8 appeui[] = LORAWAN_APPLICATION_EUI;
+	u8 deveui[] = LORAWAN_DEVICE_EUI;
 	u8 appkey[] = LORAWAN_APPLICATION_KEY;
 	
 	APP_taskID = task_id;
 
 	//设置LORAWAN 协议的CLASS 类型,目前支持class a和class c
-  g_macData.class_mode = CLASS_C;
+  g_macData.class_mode = CLASS_A;
 	LoRaMac_setMacLayerParameter(&g_macData, PARAMETER_CLASS_MODE );
 	
   //设置发射功率
